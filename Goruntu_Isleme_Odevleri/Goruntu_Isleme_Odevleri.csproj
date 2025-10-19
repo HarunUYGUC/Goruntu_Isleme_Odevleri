@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CD34AAE0-111B-4E63-924A-6BD015947BAE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Goruntu_Isleme_Odevleri</RootNamespace>
+    <AssemblyName>Goruntu_Isleme_Odevleri</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Haftlar\Hafta1Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta1Form.Designer.cs">
+      <DependentUpon>Hafta1Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Haftlar\Hafta2Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta2Form.Designer.cs">
+      <DependentUpon>Hafta2Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Projeler\Hafta 1\Proje8_BitDerinligiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje8_BitDerinligiForm.Designer.cs">
+      <DependentUpon>Proje8_BitDerinligiForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje7_YapayRenkForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje7_YapayRenkForm.Designer.cs">
+      <DependentUpon>Proje7_YapayRenkForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje6_GriBantlarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje6_GriBantlarForm.Designer.cs">
+      <DependentUpon>Proje6_GriBantlarForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje5_RGBKanallariForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje5_RGBKanallariForm.Designer.cs">
+      <DependentUpon>Proje5_RGBKanallariForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje4_MozaikForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje4_MozaikForm.Designer.cs">
+      <DependentUpon>Proje4_MozaikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje3_OrneklemeNicemlemeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje3_OrneklemeNicemlemeForm.Designer.cs">
+      <DependentUpon>Proje3_OrneklemeNicemlemeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje2_MatrisDaireForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje2_MatrisDaireForm.Designer.cs">
+      <DependentUpon>Proje2_MatrisDaireForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje1_GradyanOlusturmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 1\Proje1_GradyanOlusturmaForm.Designer.cs">
+      <DependentUpon>Proje1_GradyanOlusturmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje1_ParlaklikForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje1_ParlaklikForm.Designer.cs">
+      <DependentUpon>Proje1_ParlaklikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

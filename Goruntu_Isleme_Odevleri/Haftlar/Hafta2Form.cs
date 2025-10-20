@@ -48,6 +48,18 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 3: Histogram ile Sıkıştırma";
                 }
+                else if (i == 4)
+                {
+                    projeButon.Text = "Proje 4: İnteraktif Kontrast Germe";
+                }
+                else if (i == 5)
+                {
+                    projeButon.Text = "Proje 5: Renkli Kontrast Artırma";
+                }
+                else if (i == 6)
+                {
+                    projeButon.Text = "Proje 6: Alan Seçerek Renk Değiştirme";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -103,12 +115,27 @@ namespace Goruntu_Isleme_Odevleri
                     this.Hide();
                     proje3Form.Show();
                     break;
+                case 4:
+                    Proje4_KontrastGermeForm proje4Form = new Proje4_KontrastGermeForm(this);
+                    this.Hide();
+                    proje4Form.Show();
+                    break;
+                case 5:
+                    Proje5_RenkliKontrastForm proje5Form = new Proje5_RenkliKontrastForm(this);
+                    this.Hide();
+                    proje5Form.Show();
+                    break;
+                case 6:
+                    Proje6_AlanSecmeForm proje6Form = new Proje6_AlanSecmeForm(this);
+                    this.Hide();
+                    proje6Form.Show();
+                    break;
                 default:
                     MessageBox.Show($"Hafta 2 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
         }
-
+        
         private void btnGeri_Click(object sender, EventArgs e)
         {
             this.Close();

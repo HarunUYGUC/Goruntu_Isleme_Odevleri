@@ -113,6 +113,24 @@
     <Compile Include="Projeler\Hafta 1\Proje1_GradyanOlusturmaForm.Designer.cs">
       <DependentUpon>Proje1_GradyanOlusturmaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje6_AlanSecmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje6_AlanSecmeForm.Designer.cs">
+      <DependentUpon>Proje6_AlanSecmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje5_RenkliKontrastForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje5_RenkliKontrastForm.Designer.cs">
+      <DependentUpon>Proje5_RenkliKontrastForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje4_KontrastGermeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje4_KontrastGermeForm.Designer.cs">
+      <DependentUpon>Proje4_KontrastGermeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 2\Proje3_HistogramSikistirmaForm.cs">
       <SubType>Form</SubType>
     </Compile>

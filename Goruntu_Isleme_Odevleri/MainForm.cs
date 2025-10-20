@@ -29,7 +29,7 @@ namespace Goruntu_Isleme_Odevleri
             haftaPaneli.BorderStyle = BorderStyle.Fixed3D;
             this.Controls.Add(haftaPaneli);
 
-            int butonSayisi = 14;
+            int butonSayisi = 12;
             int baslangicY = 15;
             int bosluk = 10;
             int butonYukseklik = 45;

@@ -113,6 +113,18 @@
     <Compile Include="Projeler\Hafta 1\Proje1_GradyanOlusturmaForm.Designer.cs">
       <DependentUpon>Proje1_GradyanOlusturmaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje3_HistogramSikistirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje3_HistogramSikistirmaForm.Designer.cs">
+      <DependentUpon>Proje3_HistogramSikistirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje2_KombineEsiklemeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 2\Proje2_KombineEsiklemeForm.Designer.cs">
+      <DependentUpon>Proje2_KombineEsiklemeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 2\Proje1_ParlaklikForm.cs">
       <SubType>Form</SubType>
     </Compile>

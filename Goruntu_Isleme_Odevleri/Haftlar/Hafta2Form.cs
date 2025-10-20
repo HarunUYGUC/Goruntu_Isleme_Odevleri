@@ -40,6 +40,14 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 1: Parlaklık Ayarlama";
                 }
+                else if (i == 2)
+                {
+                    projeButon.Text = "Proje 2: Kombine Eşikleme";
+                }
+                else if (i == 3)
+                {
+                    projeButon.Text = "Proje 3: Histogram ile Sıkıştırma";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -84,6 +92,16 @@ namespace Goruntu_Isleme_Odevleri
                     Proje1_ParlaklikForm proje1Form = new Proje1_ParlaklikForm(this);
                     this.Hide();
                     proje1Form.Show();
+                    break;
+                case 2:
+                    Proje2_KombineEsiklemeForm proje2Form = new Proje2_KombineEsiklemeForm(this);
+                    this.Hide();
+                    proje2Form.Show();
+                    break;
+                case 3:
+                    Proje3_HistogramSikistirmaForm proje3Form = new Proje3_HistogramSikistirmaForm(this);
+                    this.Hide();
+                    proje3Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 2 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

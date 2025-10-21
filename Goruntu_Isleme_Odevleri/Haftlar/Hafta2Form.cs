@@ -60,6 +60,22 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 6: Alan Seçerek Renk Değiştirme";
                 }
+                else if (i == 7)
+                {
+                    projeButon.Text = "Proje 7: Renkli Resim Histogramları";
+                }
+                else if (i == 8)
+                {
+                    projeButon.Text = "Proje 8: Yapay Renklendirme";
+                }
+                else if (i == 9)
+                {
+                    projeButon.Text = "Proje 9: Gece Görüş Simülasyonu";
+                }
+                else if (i == 10)
+                {
+                    projeButon.Text = "Proje 10: Özel Renk Paleti";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -130,6 +146,26 @@ namespace Goruntu_Isleme_Odevleri
                     this.Hide();
                     proje6Form.Show();
                     break;
+                case 7:
+                    Proje7_RenkliHistogramForm proje7Form = new Proje7_RenkliHistogramForm(this);
+                    this.Hide();
+                    proje7Form.Show();
+                    break;
+                case 8:
+                    Proje8_YapayRenklendirmeForm proje8Form = new Proje8_YapayRenklendirmeForm(this);
+                    this.Hide();
+                    proje8Form.Show();
+                    break;
+                case 9:
+                    Proje9_GeceGorusForm proje9Form = new Proje9_GeceGorusForm(this);
+                    this.Hide();
+                    proje9Form.Show();
+                    break;
+                case 10:
+                    Proje10_RenkPaletiForm proje10Form = new Proje10_RenkPaletiForm(this);
+                    this.Hide();
+                    proje10Form.Show();
+                    break;
                 default:
                     MessageBox.Show($"Hafta 2 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
@@ -147,4 +183,3 @@ namespace Goruntu_Isleme_Odevleri
         }
     }
 }
-

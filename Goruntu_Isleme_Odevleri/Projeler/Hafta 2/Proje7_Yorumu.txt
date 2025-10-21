@@ -1,0 +1,9 @@
+Grafiğin büyük bir kısmı orta tonlar ve parlak tonlar yani sağ taraf arasında yoğunlaşmış. Karanlık tonlarda yani sol tarafta daha az piksel bulunuyor. 0 yani en siyah ve 255 yani en beyaz noktalarında yok denecek kadar az piksel var. Kırmızı tonlar kuşun göğsündeki kırmızı/turuncu bölgeden geliyor olmalı. Orta tonlarda yoğunluk olması resmin kırmızı kanalında detay kaybının yani patlama veya kararma gibi durumların az olmasını açıklıyor diyebiliriz.
+
+Aynı açıklamayı resmin yeşil kanalı için de yapabiliriz.
+
+Resmin mavi kanalı için ise işler biraz daha farklı. Bu sefer histogram grafiği belirgin bir şekilde sol taraf yani karanlık tonlar ile orta tonlar arasında yoğunlaşmış. Neredeyse hiç parlak mavi piksel yok. Bu resimde genel olarak mavi rengin çok az olduğunu söyleyebiliriz.
+
+Tüm bu histogram grafiklerini göz önünde bulundurduğumuzda fotoğrafın iyi pozlandığını ve kaliteli olduğunu söyleyebiliriz.
+
+Eğer kuşun göğsündeki kırmızı rengin daha vurgulu olmasını istiyorsak kırmızı kanal histogramını sağ tarafa doğru kaydırmalıyız. Bunu fotoğrafta patlama olmayacak şekilde parlaklık ve doygunluk artırarak yapabiliriz. Aynısı arka plandaki yeşil renk için de geçerli.

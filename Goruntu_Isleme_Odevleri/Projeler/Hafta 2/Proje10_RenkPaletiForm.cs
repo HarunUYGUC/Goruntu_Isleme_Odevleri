@@ -84,8 +84,16 @@ namespace Goruntu_Isleme_Odevleri
             {
                 for (int x = 0; x < colorPickerBitmap.Width; x++)
                 {
+                    // Pikselin konumunu HSL değerlerine çeviririz:
+                    // Yatay konum (x), Renk Tonunu (Hue) belirler. Soldan sağa gittikçe renkler gökkuşağı gibi değişir (0-360 derece).
                     float hue = x / (float)colorPickerBitmap.Width * 360f;
+
+                    // Dikey konum (y), Doygunluğu (Saturation) belirler.
+                    // Yukarıdan aşağı gittikçe renkler canlıdan (%100) soluk griye (%0) dönüşür.
                     float saturation = 1f - (y / (float)colorPickerBitmap.Height);
+
+                    // Bu HSL değerlerini, bilgisayarın anlayacağı bir RGB rengine çevirip pikseli boyarız.
+                    // Parlaklığı (Luminance) sabit bir değer (0.5f yani %50) olarak ayarlarız ki renklerin en saf halini görelim.
                     colorPickerBitmap.SetPixel(x, y, HslToRgb(hue, saturation, 0.5f));
                 }
             }

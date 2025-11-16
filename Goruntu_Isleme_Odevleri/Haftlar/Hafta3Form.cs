@@ -80,6 +80,14 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 11: Kaydırma (Shear) ile Döndürme";
                 }
+                else if (i == 12)
+                {
+                    projeButon.Text = "Proje 12: Alias Düzeltme ve Köşeden Döndürme";
+                }
+                else if (i == 13)
+                {
+                    projeButon.Text = "Proje 13: Çizgili Kırpma Aracı";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -175,6 +183,16 @@ namespace Goruntu_Isleme_Odevleri
                     Proje11_AcisizDondurmeForm proje11Form = new Proje11_AcisizDondurmeForm(this);
                     this.Hide();
                     proje11Form.Show();
+                    break;
+                case 12:
+                    Proje12_AliasDondurmeForm proje12Form = new Proje12_AliasDondurmeForm(this);
+                    this.Hide();
+                    proje12Form.Show();
+                    break;
+                case 13:
+                    Proje13_KirpmaCizgiForm proje13Form = new Proje13_KirpmaCizgiForm(this);
+                    this.Hide();
+                    proje13Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 3 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

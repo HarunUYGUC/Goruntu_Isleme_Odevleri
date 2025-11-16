@@ -52,6 +52,12 @@
     <Compile Include="Haftlar\Hafta1Form.Designer.cs">
       <DependentUpon>Hafta1Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Haftlar\Hafta3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta3Form.Designer.cs">
+      <DependentUpon>Hafta3Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Haftlar\Hafta2Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,6 +178,36 @@
     </Compile>
     <Compile Include="Projeler\Hafta 2\Proje1_ParlaklikForm.Designer.cs">
       <DependentUpon>Proje1_ParlaklikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje5_KirpmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje5_KirpmaForm.Designer.cs">
+      <DependentUpon>Proje5_KirpmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje4_ResimBuyutmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje4_ResimBuyutmeForm.Designer.cs">
+      <DependentUpon>Proje4_ResimBuyutmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje3_AynalamaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje3_AynalamaForm.Designer.cs">
+      <DependentUpon>Proje3_AynalamaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje2_KaydirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje2_KaydirmaForm.Designer.cs">
+      <DependentUpon>Proje2_KaydirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje1_ResimTasimaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje1_ResimTasimaForm.Designer.cs">
+      <DependentUpon>Proje1_ResimTasimaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

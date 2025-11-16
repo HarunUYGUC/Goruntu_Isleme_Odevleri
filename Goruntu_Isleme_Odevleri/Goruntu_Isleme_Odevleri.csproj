@@ -179,6 +179,42 @@
     <Compile Include="Projeler\Hafta 2\Proje1_ParlaklikForm.Designer.cs">
       <DependentUpon>Proje1_ParlaklikForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje11_AcisizDondurmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje11_AcisizDondurmeForm.Designer.cs">
+      <DependentUpon>Proje11_AcisizDondurmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje10_MouseIleDondurmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje10_MouseIleDondurmeForm.Designer.cs">
+      <DependentUpon>Proje10_MouseIleDondurmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje9_InterpolasyonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje9_InterpolasyonForm.Designer.cs">
+      <DependentUpon>Proje9_InterpolasyonForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje8_OlceklemeKutucukForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje8_OlceklemeKutucukForm.Designer.cs">
+      <DependentUpon>Proje8_OlceklemeKutucukForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje7_DondurmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje7_DondurmeForm.Designer.cs">
+      <DependentUpon>Proje7_DondurmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje6_OlceklemeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 3\Proje6_OlceklemeForm.Designer.cs">
+      <DependentUpon>Proje6_OlceklemeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 3\Proje5_KirpmaForm.cs">
       <SubType>Form</SubType>
     </Compile>

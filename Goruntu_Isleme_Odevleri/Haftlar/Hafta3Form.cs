@@ -56,6 +56,30 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 5: Resim Kırpma Aracı";
                 }
+                else if (i == 6)
+                {
+                    projeButon.Text = "Proje 6: Resim Ölçekleme (Scaling)";
+                }
+                else if (i == 7)
+                {
+                    projeButon.Text = "Proje 7: Resmi Döndürme (Rotation)";
+                }
+                else if (i == 8)
+                {
+                    projeButon.Text = "Proje 8: Çapa Noktaları ile Ölçekleme";
+                }
+                else if (i == 9)
+                {
+                    projeButon.Text = "Proje 9: Yeniden Örnekleme Karşılaştırması";
+                }
+                else if (i == 10)
+                {
+                    projeButon.Text = "Proje 10: Mouse ile Etkileşimli Döndürme";
+                }
+                else if (i == 11)
+                {
+                    projeButon.Text = "Proje 11: Kaydırma (Shear) ile Döndürme";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -121,6 +145,36 @@ namespace Goruntu_Isleme_Odevleri
                     Proje5_KirpmaForm proje5Form = new Proje5_KirpmaForm(this);
                     this.Hide();
                     proje5Form.Show();
+                    break;
+                case 6:
+                    Proje6_OlceklemeForm proje6Form = new Proje6_OlceklemeForm(this);
+                    this.Hide();
+                    proje6Form.Show();
+                    break;
+                case 7:
+                    Proje7_DondurmeForm proje7Form = new Proje7_DondurmeForm(this);
+                    this.Hide();
+                    proje7Form.Show();
+                    break;
+                case 8:
+                    Proje8_OlceklemeKutucukForm proje8Form = new Proje8_OlceklemeKutucukForm(this);
+                    this.Hide();
+                    proje8Form.Show();
+                    break;
+                case 9:
+                    Proje9_InterpolasyonForm proje9Form = new Proje9_InterpolasyonForm(this);
+                    this.Hide();
+                    proje9Form.Show();
+                    break;
+                case 10:
+                    Proje10_MouseIleDondurmeForm proje10Form = new Proje10_MouseIleDondurmeForm(this);
+                    this.Hide();
+                    proje10Form.Show();
+                    break;
+                case 11:
+                    Proje11_AcisizDondurmeForm proje11Form = new Proje11_AcisizDondurmeForm(this);
+                    this.Hide();
+                    proje11Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 3 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

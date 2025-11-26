@@ -52,6 +52,12 @@
     <Compile Include="Haftlar\Hafta1Form.Designer.cs">
       <DependentUpon>Hafta1Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Haftlar\Hafta5Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta5Form.Designer.cs">
+      <DependentUpon>Hafta5Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Haftlar\Hafta4Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -268,6 +274,30 @@
     </Compile>
     <Compile Include="Projeler\Hafta 4\Proje1_PerspektifDuzeltmeForm.Designer.cs">
       <DependentUpon>Proje1_PerspektifDuzeltmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje4_GaussSigmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje4_GaussSigmaForm.Designer.cs">
+      <DependentUpon>Proje4_GaussSigmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje3_BuzluCamForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje3_BuzluCamForm.Designer.cs">
+      <DependentUpon>Proje3_BuzluCamForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje2_OzelBulaniklastirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje2_OzelBulaniklastirmaForm.Designer.cs">
+      <DependentUpon>Proje2_OzelBulaniklastirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje1_FiltrelemeKarsilastirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje1_FiltrelemeKarsilastirmaForm.Designer.cs">
+      <DependentUpon>Proje1_FiltrelemeKarsilastirmaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

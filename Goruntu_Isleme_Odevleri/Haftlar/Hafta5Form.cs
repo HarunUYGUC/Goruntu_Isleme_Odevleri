@@ -52,6 +52,22 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 4: Gauss Filtresinde Standart Sapma (Sigma) Etkisi";
                 }
+                else if (i == 5)
+                {
+                    projeButon.Text = "Proje 5: Bina Netleştirme (Arka Plan Bulanıklaştırma)";
+                }
+                else if (i == 6)
+                {
+                    projeButon.Text = "Proje 6: Mouse Takip Eden Dinamik Blur";
+                }
+                else if (i == 7)
+                {
+                    projeButon.Text = "Proje 7: En Sık Tekrar Eden Renk (Mode) Filtresi";
+                }
+                else if (i == 8)
+                {
+                    projeButon.Text = "Proje 8: Piramit (Lineer) Bulanıklaştırma";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -112,6 +128,26 @@ namespace Goruntu_Isleme_Odevleri
                     Proje4_GaussSigmaForm proje4Form = new Proje4_GaussSigmaForm(this);
                     this.Hide();
                     proje4Form.Show();
+                    break;
+                case 5:
+                    Proje5_BinaBulaniklastirmaForm proje5Form = new Proje5_BinaBulaniklastirmaForm(this);
+                    this.Hide();
+                    proje5Form.Show();
+                    break;
+                case 6:
+                    Proje6_MouseBlurForm proje6Form = new Proje6_MouseBlurForm(this);
+                    this.Hide();
+                    proje6Form.Show();
+                    break;
+                case 7:
+                    Proje7_ModFiltresiForm proje7Form = new Proje7_ModFiltresiForm(this);
+                    this.Hide();
+                    proje7Form.Show();
+                    break;
+                case 8:
+                    Proje8_PiramitBulaniklastirmaForm proje8Form = new Proje8_PiramitBulaniklastirmaForm(this);
+                    this.Hide();
+                    proje8Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 5 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

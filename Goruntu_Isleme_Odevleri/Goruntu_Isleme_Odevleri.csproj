@@ -275,6 +275,30 @@
     <Compile Include="Projeler\Hafta 4\Proje1_PerspektifDuzeltmeForm.Designer.cs">
       <DependentUpon>Proje1_PerspektifDuzeltmeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje8_PiramitBulaniklastirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje8_PiramitBulaniklastirmaForm.Designer.cs">
+      <DependentUpon>Proje8_PiramitBulaniklastirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje7_ModFiltresiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje7_ModFiltresiForm.Designer.cs">
+      <DependentUpon>Proje7_ModFiltresiForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje6_MouseBlurForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje6_MouseBlurForm.Designer.cs">
+      <DependentUpon>Proje6_MouseBlurForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje5_BinaBulaniklastirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 5\Proje5_BinaBulaniklastirmaForm.Designer.cs">
+      <DependentUpon>Proje5_BinaBulaniklastirmaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 5\Proje4_GaussSigmaForm.cs">
       <SubType>Form</SubType>
     </Compile>

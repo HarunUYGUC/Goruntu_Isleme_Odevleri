@@ -52,6 +52,12 @@
     <Compile Include="Haftlar\Hafta1Form.Designer.cs">
       <DependentUpon>Hafta1Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Haftlar\Hafta6Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta6Form.Designer.cs">
+      <DependentUpon>Hafta6Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Haftlar\Hafta5Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -322,6 +328,24 @@
     </Compile>
     <Compile Include="Projeler\Hafta 5\Proje1_FiltrelemeKarsilastirmaForm.Designer.cs">
       <DependentUpon>Proje1_FiltrelemeKarsilastirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje3_NormalizasyonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje3_NormalizasyonForm.Designer.cs">
+      <DependentUpon>Proje3_NormalizasyonForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje2_NetlestirmeMatrisBoyutuForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje2_NetlestirmeMatrisBoyutuForm.Designer.cs">
+      <DependentUpon>Proje2_NetlestirmeMatrisBoyutuForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje1_NetlestirmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje1_NetlestirmeForm.Designer.cs">
+      <DependentUpon>Proje1_NetlestirmeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

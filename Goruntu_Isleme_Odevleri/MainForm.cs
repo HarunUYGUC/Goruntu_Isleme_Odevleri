@@ -91,6 +91,11 @@ namespace Goruntu_Isleme_Odevleri
                     this.Hide();
                     hafta5Form.Show();
                     break;
+                case 6:
+                    Hafta6Form hafta6Form = new Hafta6Form(this);
+                    this.Hide();
+                    hafta6Form.Show();
+                    break;
                 default:
                     MessageBox.Show($"Hafta {haftaNumarasi} projeleri henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;

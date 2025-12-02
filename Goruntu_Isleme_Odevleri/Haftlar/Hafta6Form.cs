@@ -48,6 +48,18 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 3: Normalizasyon vs Kesme (Clamping)";
                 }
+                else if (i == 4)
+                {
+                    projeButon.Text = "Proje 4: Özel Bulanıklaştırma Algoritması";
+                }
+                else if (i == 5)
+                {
+                    projeButon.Text = "Proje 5: Mouse İle Bölgesel Netleştirme (Focus Tool)";
+                }
+                else if (i == 6)
+                {
+                    projeButon.Text = "Proje 6: Bölgesel Netleştirme ve Bulanıklaştırma";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -103,6 +115,21 @@ namespace Goruntu_Isleme_Odevleri
                     Proje3_NormalizasyonForm proje3Form = new Proje3_NormalizasyonForm(this);
                     this.Hide();
                     proje3Form.Show();
+                    break;
+                case 4:
+                    Proje4_BolgeselIslemForm proje4Form = new Proje4_BolgeselIslemForm(this);
+                    this.Hide();
+                    proje4Form.Show();
+                    break;
+                case 5:
+                    Proje5_BolgeselNetlestirmeForm proje5Form = new Proje5_BolgeselNetlestirmeForm(this);
+                    this.Hide();
+                    proje5Form.Show();
+                    break;
+                case 6:
+                    Proje6_BolgeselNetlestirmeBulaniklastirmaForm proje6Form = new Proje6_BolgeselNetlestirmeBulaniklastirmaForm(this);
+                    this.Hide();
+                    proje6Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 6 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

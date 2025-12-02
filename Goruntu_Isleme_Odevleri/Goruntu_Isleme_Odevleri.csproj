@@ -329,6 +329,24 @@
     <Compile Include="Projeler\Hafta 5\Proje1_FiltrelemeKarsilastirmaForm.Designer.cs">
       <DependentUpon>Proje1_FiltrelemeKarsilastirmaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje6_BolgeselNetlestirmeBulaniklastirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje6_BolgeselNetlestirmeBulaniklastirmaForm.Designer.cs">
+      <DependentUpon>Proje6_BolgeselNetlestirmeBulaniklastirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje5_BolgeselNetlestirmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje5_BolgeselNetlestirmeForm.Designer.cs">
+      <DependentUpon>Proje5_BolgeselNetlestirmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje4_BolgeselIslemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 6\Proje4_BolgeselIslemForm.Designer.cs">
+      <DependentUpon>Proje4_BolgeselIslemForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 6\Proje3_NormalizasyonForm.cs">
       <SubType>Form</SubType>
     </Compile>

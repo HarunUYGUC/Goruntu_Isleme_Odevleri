@@ -52,6 +52,12 @@
     <Compile Include="Haftlar\Hafta1Form.Designer.cs">
       <DependentUpon>Hafta1Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Haftlar\Hafta7Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta7Form.Designer.cs">
+      <DependentUpon>Hafta7Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Haftlar\Hafta6Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -364,6 +370,18 @@
     </Compile>
     <Compile Include="Projeler\Hafta 6\Proje1_NetlestirmeForm.Designer.cs">
       <DependentUpon>Proje1_NetlestirmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje2_KenarRenklendirmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje2_KenarRenklendirmeForm.Designer.cs">
+      <DependentUpon>Proje2_KenarRenklendirmeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje1_KenarBulmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje1_KenarBulmaForm.Designer.cs">
+      <DependentUpon>Proje1_KenarBulmaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

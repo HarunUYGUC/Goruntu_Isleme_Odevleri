@@ -371,6 +371,24 @@
     <Compile Include="Projeler\Hafta 6\Proje1_NetlestirmeForm.Designer.cs">
       <DependentUpon>Proje1_NetlestirmeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje6_KirschForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje6_KirschForm.Designer.cs">
+      <DependentUpon>Proje6_KirschForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje5_AciKarsilastirmaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje5_AciKarsilastirmaForm.Designer.cs">
+      <DependentUpon>Proje5_AciKarsilastirmaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje4_FarkliMatrislerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje4_FarkliMatrislerForm.Designer.cs">
+      <DependentUpon>Proje4_FarkliMatrislerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 7\Proje2_KenarRenklendirmeForm.cs">
       <SubType>Form</SubType>
     </Compile>

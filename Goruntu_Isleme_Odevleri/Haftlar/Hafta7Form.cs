@@ -44,6 +44,18 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 2: Kenar Renklendirme (Sobel & Compass)";
                 }
+                else if (i == 4)
+                {
+                    projeButon.Text = "Proje 4: Compass Algoritması (3 Farklı Matris)";
+                }
+                else if (i == 5)
+                {
+                    projeButon.Text = "Proje 5: Açı Hesaplama ve Karşılaştırma (Sobel vs Compass)";
+                }
+                else if (i == 6)
+                {
+                    projeButon.Text = "Proje 6: Kirsch Compass Algoritması (Liste Yapısı)";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i;
@@ -94,6 +106,21 @@ namespace Goruntu_Isleme_Odevleri
                     Proje2_KenarRenklendirmeForm proje2Form = new Proje2_KenarRenklendirmeForm(this);
                     this.Hide();
                     proje2Form.Show();
+                    break;
+                case 4:
+                    Proje4_FarkliMatrislerForm proje4Form = new Proje4_FarkliMatrislerForm(this);
+                    this.Hide();
+                    proje4Form.Show();
+                    break;
+                case 5:
+                    Proje5_AciKarsilastirmaForm proje5Form = new Proje5_AciKarsilastirmaForm(this);
+                    this.Hide();
+                    proje5Form.Show();
+                    break;
+                case 6:
+                    Proje6_KirschForm proje6Form = new Proje6_KirschForm(this);
+                    this.Hide();
+                    proje6Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 7 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -154,59 +154,62 @@ namespace Goruntu_Isleme_Odevleri
         // içerisinde istenen değişiklikleri yapabiliyoruz.
         private void btnUygula_Click(object sender, EventArgs e)
         {
-            // Resim yoksa veya geçerli bir poligon (en az 3 nokta)
-            // çizilmediyse uyarı ver ve işlemi durdur.
             if (originalBitmap == null) { MessageBox.Show("Lütfen önce bir resim yükleyin!"); return; }
             if (polygonPoints.Count < 3) { MessageBox.Show("Lütfen en az 3 nokta ile kapalı bir alan seçin!"); return; }
 
             processedBitmap = new Bitmap(originalBitmap);
 
-            // Eğer poligonun geometrik yolu daha önce hesaplanmadıysa,
-            // bir kereye mahsus hesapla ve hafızada tut.
-            if (polygonPath == null)
+            // 1. ADIM: Ekranda tıkladığımız noktaları (PictureBox Koordinatları),
+            // Gerçek resim boyutlarına (Bitmap Koordinatları) çeviriyoruz.
+            List<PointF> imagePoints = new List<PointF>();
+            foreach (Point p in polygonPoints)
             {
-                polygonPath = new GraphicsPath();
-                polygonPath.AddPolygon(polygonPoints.ToArray());
+                imagePoints.Add(ConvertPointToImage(p));
             }
 
-            for (int y = 0; y < processedBitmap.Height; y++)
+            // 2. ADIM: Çevrilmiş noktalarla sanal bir yol (Path) oluşturuyoruz.
+            // Bu path artık resmin birebir boyutlarıyla eşleşiyor.
+            using (GraphicsPath imagePath = new GraphicsPath())
             {
-                for (int x = 0; x < processedBitmap.Width; x++)
+                imagePath.AddPolygon(imagePoints.ToArray());
+
+                // 3. ADIM: Resim piksellerini tarıyoruz.
+                for (int y = 0; y < processedBitmap.Height; y++)
                 {
-                    PointF imagePoint = ConvertPointToImage(new Point(x, y));
-
-                    // 'IsVisible', bir noktanın oluşturduğumuz poligonun içinde olup olmadığını
-                    // kontrol eden güçlü bir geometrik fonksiyondur.
-                    if (polygonPath.IsVisible(imagePoint))
+                    for (int x = 0; x < processedBitmap.Width; x++)
                     {
-                        Color originalColor = processedBitmap.GetPixel(x, y);
+                        if (imagePath.IsVisible(x, y))
+                        {
+                            Color originalColor = processedBitmap.GetPixel(x, y);
 
-                        // Renk Değişimi
-                        int r = originalColor.R + tbRed.Value;
-                        int g = originalColor.G + tbGreen.Value;
-                        int b = originalColor.B + tbBlue.Value;
+                            // Renk Değişimi
+                            int r = originalColor.R + tbRed.Value;
+                            int g = originalColor.G + tbGreen.Value;
+                            int b = originalColor.B + tbBlue.Value;
 
-                        // Parlaklık
-                        r += tbParlaklik.Value;
-                        g += tbParlaklik.Value;
-                        b += tbParlaklik.Value;
+                            // Parlaklık
+                            r += tbParlaklik.Value;
+                            g += tbParlaklik.Value;
+                            b += tbParlaklik.Value;
 
-                        // Kontrast
-                        double contrast = (100.0 + tbKontrast.Value) / 100.0;
-                        contrast *= contrast;
-                        r = (int)(((((r / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                        g = (int)(((((g / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                        b = (int)(((((b / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                            // Kontrast
+                            double contrast = (100.0 + tbKontrast.Value) / 100.0;
+                            contrast *= contrast;
+                            r = (int)(((((r / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                            g = (int)(((((g / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                            b = (int)(((((b / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
 
-                        // Değerleri 0-255 aralığında tut
-                        r = Math.Max(0, Math.Min(255, r));
-                        g = Math.Max(0, Math.Min(255, g));
-                        b = Math.Max(0, Math.Min(255, b));
+                            // Değerleri 0-255 aralığında tut
+                            r = Math.Max(0, Math.Min(255, r));
+                            g = Math.Max(0, Math.Min(255, g));
+                            b = Math.Max(0, Math.Min(255, b));
 
-                        processedBitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
+                            processedBitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
+                        }
                     }
                 }
             }
+
             pcbResim.Image = processedBitmap;
             pcbResim.Invalidate();
         }

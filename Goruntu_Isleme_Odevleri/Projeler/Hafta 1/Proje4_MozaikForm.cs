@@ -35,12 +35,12 @@ namespace Goruntu_Isleme_Odevleri
             btnYukle = new Button() { Text = "Resim Yükle", Location = new Point(25, controlsY), Size = new Size(150, 40) };
             btnYukle.Click += new EventHandler(btnYukle_Click);
 
-            lblMozaikBoyutu = new Label() { Text = "Mozaik Boyutu (Piksel):", Location = new Point(200, controlsY + 12), AutoSize = true };
-            cmbMozaikBoyutu = new ComboBox() { Location = new Point(340, controlsY + 10), DropDownStyle = ComboBoxStyle.DropDownList };
+            lblMozaikBoyutu = new Label() { Text = "Mozaik Aralığı:", Location = new Point(200, controlsY + 12), AutoSize = true };
+            cmbMozaikBoyutu = new ComboBox() { Location = new Point(300, controlsY + 10), DropDownStyle = ComboBoxStyle.DropDownList, Width = 60 };
             cmbMozaikBoyutu.Items.AddRange(new object[] { "2", "5", "10", "25" });
-            cmbMozaikBoyutu.SelectedIndex = 0;
+            cmbMozaikBoyutu.SelectedIndex = 1;
 
-            btnMozaikOlustur = new Button() { Text = "Mozaik Oluştur", Location = new Point(480, controlsY), Size = new Size(150, 40), BackColor = Color.LightGreen };
+            btnMozaikOlustur = new Button() { Text = "Mozaikle", Location = new Point(380, controlsY), Size = new Size(150, 40), BackColor = Color.LightGreen };
             btnMozaikOlustur.Click += new EventHandler(btnMozaikOlustur_Click);
 
             btnGeri = new Button() { Text = "Hafta Menüsüne Dön", Location = new Point(1125, controlsY), Size = new Size(150, 40), BackColor = Color.LightCoral };
@@ -76,14 +76,16 @@ namespace Goruntu_Isleme_Odevleri
         private void ConvertToGray()
         {
             if (originalBitmap == null) return;
+
             grayBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
+
             for (int y = 0; y < originalBitmap.Height; y++)
             {
                 for (int x = 0; x < originalBitmap.Width; x++)
                 {
-                    Color originalColor = originalBitmap.GetPixel(x, y);
-                    int grayScale = (int)((originalColor.R * 0.3) + (originalColor.G * 0.59) + (originalColor.B * 0.11));
-                    Color grayColor = Color.FromArgb(grayScale, grayScale, grayScale);
+                    Color pixelColor = originalBitmap.GetPixel(x, y);
+                    int grayValue = (int)((pixelColor.R + pixelColor.G + pixelColor.B) / 3.0);
+                    Color grayColor = Color.FromArgb(grayValue, grayValue, grayValue);
                     grayBitmap.SetPixel(x, y, grayColor);
                 }
             }
@@ -92,45 +94,53 @@ namespace Goruntu_Isleme_Odevleri
 
         private void btnMozaikOlustur_Click(object sender, EventArgs e)
         {
-            if (grayBitmap == null) { MessageBox.Show("Lütfen önce bir resim yükleyin!"); return; }
+            if (grayBitmap == null)
+            {
+                MessageBox.Show("Lütfen önce bir resim yükleyin!", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             int mozaikBoyutu = int.Parse(cmbMozaikBoyutu.SelectedItem.ToString());
 
-            int yeniGenislik = grayBitmap.Width / mozaikBoyutu;
-            int yeniYukseklik = grayBitmap.Height / mozaikBoyutu;
+            // Resim küçültülmüyor, orijinal boyutta kalıp bloklar boyanıyor.
+            Bitmap mosaicBitmap = new Bitmap(grayBitmap.Width, grayBitmap.Height);
 
-            Bitmap mosaicBitmap = new Bitmap(yeniGenislik, yeniYukseklik);
-
-            for (int y = 0; y < yeniYukseklik; y++)
+            for (int y = 0; y < grayBitmap.Height; y += mozaikBoyutu)
             {
-                for (int x = 0; x < yeniGenislik; x++)
+                for (int x = 0; x < grayBitmap.Width; x += mozaikBoyutu)
                 {
-                    long toplamGriDeger = 0;
-                    int pikselSayisi = 0;
+                    // Blok sınırlarını belirle (Taşmaları önlemek için Math.Min kullanıldı - 1. Koddaki gibi)
+                    int offsetX = Math.Min(mozaikBoyutu, grayBitmap.Width - x);
+                    int offsetY = Math.Min(mozaikBoyutu, grayBitmap.Height - y);
 
-                    // Orijinal (gri) resimdeki mozaik bloğunu tara
-                    for (int blockY = 0; blockY < mozaikBoyutu; blockY++)
+                    int r = 0, g = 0, b = 0, count = 0;
+
+                    // Bloğun ortalamasını hesapla
+                    for (int yy = 0; yy < offsetY; yy++)
                     {
-                        for (int blockX = 0; blockX < mozaikBoyutu; blockX++)
+                        for (int xx = 0; xx < offsetX; xx++)
                         {
-                            int pikselX = (x * mozaikBoyutu) + blockX;
-                            int pikselY = (y * mozaikBoyutu) + blockY;
-
-                            if (pikselX < grayBitmap.Width && pikselY < grayBitmap.Height)
-                            {
-                                // Gri resimde R, G, B aynı olduğu için birini almak yeterli.
-                                toplamGriDeger += grayBitmap.GetPixel(pikselX, pikselY).R;
-                                pikselSayisi++;
-                            }
+                            Color pixel = grayBitmap.GetPixel(x + xx, y + yy);
+                            r += pixel.R;
+                            g += pixel.G;
+                            b += pixel.B;
+                            count++;
                         }
                     }
 
-                    int ortalamaGri = (int)(toplamGriDeger / pikselSayisi);
-                    Color ortalamaRenk = Color.FromArgb(ortalamaGri, ortalamaGri, ortalamaGri);
+                    Color avg = Color.FromArgb(r / count, g / count, b / count);
 
-                    mosaicBitmap.SetPixel(x, y, ortalamaRenk);
+                    // Hesaplanan ortalama rengi bloğun tamamına uygula
+                    for (int yy = 0; yy < offsetY; yy++)
+                    {
+                        for (int xx = 0; xx < offsetX; xx++)
+                        {
+                            mosaicBitmap.SetPixel(x + xx, y + yy, avg);
+                        }
+                    }
                 }
             }
+
             pcbMosaic.Image = mosaicBitmap;
         }
 
@@ -145,4 +155,3 @@ namespace Goruntu_Isleme_Odevleri
         }
     }
 }
-

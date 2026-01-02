@@ -7,46 +7,64 @@ namespace Goruntu_Isleme_Odevleri
 {
     public partial class Proje10_MouseIleDondurmeForm : Form
     {
+        private Panel pnlContainer;
         private PictureBox pcbCanvas;
         private Button btnYukle, btnSifirla, btnGeri;
         private Label lblBilgi;
         private Form haftaFormu;
 
         private Bitmap originalBitmap;
-        private float accumulatedAngle = 0; // Yapılan döndürmelerin toplamı
-        private float currentRotationDelta = 0; // Fare hareketiyle oluşan anlık değişim
+        private float accumulatedAngle = 0;
+        private float currentRotationDelta = 0;
 
         private bool isDragging = false;
-        private float startMouseAngle = 0; // Tıklama anındaki farenin açısı
-        private PointF centerPoint; // Dönme merkezi
+        private float startMouseAngle = 0;
+        private PointF rotationCenter;
 
         public Proje10_MouseIleDondurmeForm(Form parentForm)
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 10: Mouse ile Etkileşimli Döndürme";
+            this.Text = "Proje 10: Kesilmeden Mouse ile Döndürme";
 
-            pcbCanvas = new PictureBox()
+            // 1. PANEL (Kapsayıcı)
+            pnlContainer = new Panel()
             {
                 Location = new Point(25, 25),
                 Size = new Size(600, 500),
-                BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.FromArgb(50, 50, 50),
-                Cursor = Cursors.Hand
+                BorderStyle = BorderStyle.Fixed3D,
+                BackColor = Color.FromArgb(40, 40, 40),
+                AutoScroll = true 
             };
-            // DoubleBuffered: Titreşimi engellemek için
+
+            // 2. PICTUREBOX (Tuval)
+            pcbCanvas = new PictureBox()
+            {
+                Size = new Size(100, 100),
+                Location = new Point(0, 0),
+                BackColor = Color.Transparent,
+                Cursor = Cursors.Hand,
+                SizeMode = PictureBoxSizeMode.Normal 
+            };
+
+            // Titreşimi önlemek için DoubleBuffered ayarı
             typeof(Control).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.SetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
                 null, pcbCanvas, new object[] { true });
 
+            // Olayları Bağla
             pcbCanvas.MouseDown += PcbCanvas_MouseDown;
             pcbCanvas.MouseMove += PcbCanvas_MouseMove;
             pcbCanvas.MouseUp += PcbCanvas_MouseUp;
             pcbCanvas.Paint += PcbCanvas_Paint;
 
+            // PictureBox'ı Panelin içine ekle
+            pnlContainer.Controls.Add(pcbCanvas);
+
+            // Diğer Kontroller
             lblBilgi = new Label()
             {
-                Text = "Resmi yükleyin ve mouse ile basılı tutup çevirin.",
+                Text = "Resmi yükleyin ve mouse ile çevirin. (Taşma olmaz)",
                 Location = new Point(25, 540),
                 AutoSize = true,
                 Font = new Font("Arial", 10, FontStyle.Bold)
@@ -61,7 +79,7 @@ namespace Goruntu_Isleme_Odevleri
             btnGeri = new Button() { Text = "Hafta Menüsüne Dön", Location = new Point(475, 570), Size = new Size(150, 40), BackColor = Color.LightCoral };
             btnGeri.Click += new EventHandler(btnGeri_Click);
 
-            this.Controls.AddRange(new Control[] { pcbCanvas, lblBilgi, btnYukle, btnSifirla, btnGeri });
+            this.Controls.AddRange(new Control[] { pnlContainer, lblBilgi, btnYukle, btnSifirla, btnGeri });
         }
 
         private void InitializeComponent()
@@ -80,52 +98,50 @@ namespace Goruntu_Isleme_Odevleri
             dialog.Filter = "Resim Dosyaları|*.jpg;*.jpeg;*.png;*.bmp";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                // Resmi yükle ve sığacak şekilde yeniden boyutlandır
-                Bitmap temp = new Bitmap(dialog.FileName);
-                // Resmi PictureBox'ın yarısı kadar boyutta tutalım ki dönerken taşmasın
-                int targetWidth = Math.Min(temp.Width, 300);
-                int targetHeight = (int)(targetWidth * ((float)temp.Height / temp.Width));
-                originalBitmap = new Bitmap(temp, new Size(targetWidth, targetHeight));
+                originalBitmap = new Bitmap(dialog.FileName);
+
+                // Resmin köşegen uzunluğunu hesapla (Pisagor)
+                int diagonal = (int)Math.Ceiling(Math.Sqrt(
+                    (originalBitmap.Width * originalBitmap.Width) +
+                    (originalBitmap.Height * originalBitmap.Height)));
+
+                int safeSize = diagonal + 50;
+
+                pcbCanvas.Size = new Size(safeSize, safeSize);
+
+                rotationCenter = new PointF(safeSize / 2, safeSize / 2);
 
                 accumulatedAngle = 0;
                 currentRotationDelta = 0;
 
-                centerPoint = new PointF(pcbCanvas.Width / 2, pcbCanvas.Height / 2);
+                pnlContainer.AutoScrollPosition = new Point(0, 0);
 
                 pcbCanvas.Invalidate();
             }
         }
 
-        // FARE OLAYLARI 
-
         private void PcbCanvas_MouseDown(object sender, MouseEventArgs e)
         {
             if (originalBitmap == null || e.Button != MouseButtons.Left) return;
-
             isDragging = true;
-            // Tıklanan noktanın merkeze göre açısını hesapla
-            startMouseAngle = GetAngleFromPoint(centerPoint, e.Location);
+            startMouseAngle = GetAngleFromPoint(rotationCenter, e.Location);
         }
 
         private void PcbCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (!isDragging || originalBitmap == null) return;
 
-            // Şu anki fare konumunun açısını hesapla
-            float currentMouseAngle = GetAngleFromPoint(centerPoint, e.Location);
-
-            // Aradaki fark kadar resmi döndür
+            float currentMouseAngle = GetAngleFromPoint(rotationCenter, e.Location);
             currentRotationDelta = currentMouseAngle - startMouseAngle;
 
             lblBilgi.Text = $"Açı: {(accumulatedAngle + currentRotationDelta):0.0}°";
-            pcbCanvas.Invalidate(); // Yeniden çiz (Paint olayını tetikler)
+            pcbCanvas.Invalidate();
         }
 
         private void PcbCanvas_MouseUp(object sender, MouseEventArgs e)
         {
             if (isDragging)
             {
-                // Fare bırakılınca, geçici farkı ana açıya ekle ve farkı sıfırla
                 accumulatedAngle += currentRotationDelta;
                 currentRotationDelta = 0;
                 isDragging = false;
@@ -133,8 +149,6 @@ namespace Goruntu_Isleme_Odevleri
             }
         }
 
-        // İki nokta arasındaki açıyı (derece cinsinden) hesaplar.
-        // Math.Atan2(dy, dx) radyan döndürür, bunu dereceye çeviririz.
         private float GetAngleFromPoint(PointF center, Point target)
         {
             double dx = target.X - center.X;
@@ -143,36 +157,26 @@ namespace Goruntu_Isleme_Odevleri
             return (float)(radians * (180 / Math.PI));
         }
 
+        // --- ÇİZİM İŞLEMİ ---
         private void PcbCanvas_Paint(object sender, PaintEventArgs e)
         {
             if (originalBitmap == null) return;
 
             Graphics g = e.Graphics;
+
             g.SmoothingMode = SmoothingMode.HighQuality;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             float totalAngle = accumulatedAngle + currentRotationDelta;
 
-            // Transformasyon Matrisi Ayarları 
-            // Koordinat sisteminin merkezini PictureBox'ın ortasına taşı
-            g.TranslateTransform(centerPoint.X, centerPoint.Y);
+            g.TranslateTransform(rotationCenter.X, rotationCenter.Y);
 
-            // Koordinat sistemini döndür
             g.RotateTransform(totalAngle);
 
-            // Resmin merkezi, koordinat sisteminin merkezine (0,0) gelmeli.
-            // Bu yüzden resmi çizmeye (-Width/2, -Height/2) noktasından başlarız.
             int offsetX = -originalBitmap.Width / 2;
             int offsetY = -originalBitmap.Height / 2;
 
             g.DrawImage(originalBitmap, offsetX, offsetY);
-
-            // Resmin kenarları için kırmızı bir çerçeve
-            using (Pen borderPen = new Pen(Color.Red, 3))
-            {
-                borderPen.DashStyle = DashStyle.Dash;
-                g.DrawRectangle(borderPen, offsetX, offsetY, originalBitmap.Width, originalBitmap.Height);
-            }
 
             g.ResetTransform();
         }

@@ -26,7 +26,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 3: Renkli Morfolojik İşlemler (Düzeltilmiş)";
+            this.Text = "Proje 3: Renkli Morfolojik İşlemler";
             SetupUI();
 
             this.FormClosed += (s, e) => haftaFormu.Show();

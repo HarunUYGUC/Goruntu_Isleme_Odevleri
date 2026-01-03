@@ -40,6 +40,10 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 1: Mantıksal Operatör";
                 }
+                else if (i == 2) 
+                {
+                    projeButon.Text = "Proje 2: Bit Düzeltme İşlemleri";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i + " (Henüz Eklenmedi)";
@@ -84,6 +88,11 @@ namespace Goruntu_Isleme_Odevleri
                     Proje1_MantiksalOperatorForm proje1Form = new Proje1_MantiksalOperatorForm(this);
                     this.Hide();
                     proje1Form.Show();
+                    break;
+                case 2:
+                    Proje2_BitDuzlemiIslemleriForm proje2Form = new Proje2_BitDuzlemiIslemleriForm(this);
+                    this.Hide();
+                    proje2Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 9 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

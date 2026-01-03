@@ -6,7 +6,6 @@ namespace Goruntu_Isleme_Odevleri
 {
     public partial class Proje2_BitDuzlemiIslemleriForm : Form
     {
-        // UI Elemanları
         private PictureBox pcbKaynak, pcbBit0, pcbBit5, pcbToplam, pcbFark;
         private Label lblKaynak, lblBit0, lblBit5, lblToplam, lblFark;
         private Button btnResimYukle, btnIslemiUygula, btnGeri;
@@ -17,7 +16,7 @@ namespace Goruntu_Isleme_Odevleri
         public Proje2_BitDuzlemiIslemleriForm(Form parent)
         {
             InitializeComponent();
-            parentForm = parent; // parentForm atamasını InitializeComponent sonrasına aldım
+            parentForm = parent; 
             SetupUI();
         }
 
@@ -29,7 +28,6 @@ namespace Goruntu_Isleme_Odevleri
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
-            // Lambda ifadesi içinde parentForm'un null olmadığından emin olmak iyidir
             this.FormClosed += (s, e) => {
                 if (parentForm != null && !parentForm.IsDisposed)
                     parentForm.Show();
@@ -44,18 +42,15 @@ namespace Goruntu_Isleme_Odevleri
             int startY = 50;
             int labelOffsetY = -25;
 
-            // --- Kaynak Resim ---
             lblKaynak = CreateLabel("Kaynak Resim (Gri)", startX, startY + labelOffsetY);
             pcbKaynak = CreatePictureBox(startX, startY, picSize);
 
-            // --- Bit Düzlemleri ---
             lblBit0 = CreateLabel("0. Bit Düzlemi (Gürültü)", startX + picSize + gap, startY + labelOffsetY);
             pcbBit0 = CreatePictureBox(startX + picSize + gap, startY, picSize);
 
             lblBit5 = CreateLabel("5. Bit Düzlemi (Yapı)", startX + 2 * (picSize + gap), startY + labelOffsetY);
             pcbBit5 = CreatePictureBox(startX + 2 * (picSize + gap), startY, picSize);
 
-            // --- Sonuçlar (Alt Satır) ---
             int row2Y = startY + picSize + 60;
 
             lblToplam = CreateLabel("Toplam (Bit 5 + Bit 0)", startX + picSize + gap, row2Y + labelOffsetY);
@@ -64,7 +59,6 @@ namespace Goruntu_Isleme_Odevleri
             lblFark = CreateLabel("Fark ( |Bit 5 - Bit 0| )", startX + 2 * (picSize + gap), row2Y + labelOffsetY);
             pcbFark = CreatePictureBox(startX + 2 * (picSize + gap), row2Y, picSize);
 
-            // --- Butonlar ---
             btnResimYukle = CreateButton("Resim Yükle", 30, row2Y, 150, 40, Color.LightBlue);
             btnResimYukle.Click += BtnResimYukle_Click;
 
@@ -75,9 +69,6 @@ namespace Goruntu_Isleme_Odevleri
             btnGeri = CreateButton("Menüye Dön", 30, 550, 150, 40, Color.LightCoral);
             btnGeri.Click += (s, e) => this.Close();
 
-            // --- HATA DÜZELTİLDİ: Filtre formatı ---
-            // Eskisi: "Resim Dosyaları|.jpg;.jpeg;.png;.bmp" (Yanlış)
-            // Yenisi: "Resim Dosyaları|*.jpg;*.jpeg;*.png;*.bmp" (Doğru)
             openFileDialog = new OpenFileDialog { Filter = "Resim Dosyaları|*.jpg;*.jpeg;*.png;*.bmp" };
 
             this.Controls.Add(lblKaynak); this.Controls.Add(pcbKaynak);
@@ -90,19 +81,14 @@ namespace Goruntu_Isleme_Odevleri
             this.Controls.Add(btnGeri);
         }
 
-        // --- Olay İşleyiciler ---
-
         private void BtnResimYukle_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
-                    // Dosya kilitleme sorununu önlemek için using bloğu veya kopyalama
                     using (var temp = new Bitmap(openFileDialog.FileName))
                     {
-                        // PictureBox boyutuna göre değil, orijinal boyutta tutmak daha sağlıklıdır
-                        // Ancak burada önceki kodunuzdaki mantığı (pcbKaynak.Size) koruyorum
                         kaynakResim = new Bitmap(temp, pcbKaynak.Size);
                     }
 
@@ -125,7 +111,7 @@ namespace Goruntu_Isleme_Odevleri
         private void BtnIslemiUygula_Click(object sender, EventArgs e)
         {
             if (kaynakResim == null) return;
-            this.Cursor = Cursors.WaitCursor; // İmleci bekleme moduna al
+            this.Cursor = Cursors.WaitCursor; 
 
             int w = kaynakResim.Width;
             int h = kaynakResim.Height;
@@ -176,7 +162,7 @@ namespace Goruntu_Isleme_Odevleri
                 for (int x = 0; x < bmp.Width; x++)
                 {
                     Color c = bmp.GetPixel(x, y);
-                    int gri = (int)(c.R * 0.3 + c.G * 0.59 + c.B * 0.11); // Luma yöntemi daha kalitelidir
+                    int gri = (int)(c.R * 0.3 + c.G * 0.59 + c.B * 0.11); 
                     bmp.SetPixel(x, y, Color.FromArgb(gri, gri, gri));
                 }
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Goruntu_Isleme_Odevleri
@@ -10,13 +11,14 @@ namespace Goruntu_Isleme_Odevleri
         private PictureBox pcbOriginal, pcbResult;
         private Button btnYukle, btnDuzelt, btnAliasDuzelt, btnGeri, btnTemizle;
         private Label lblOriginal, lblResult, lblInfo;
+        private Panel pnlResult;
         private Form haftaFormu;
 
         private Bitmap originalBitmap;
         private Bitmap transformedBitmap;
-        private List<Point> sourcePoints = new List<Point>();
+        private List<Point> sourcePoints = new List<Point>(); // Seçilen 4 nokta
 
-        // Matris Katsayıları (a, b, c, d, e, f, g, h)
+        // Matris Katsayıları (a, b, c, d, e, f, g, h) - 8 parametreli
         private double[] matrixParams;
 
         public Proje1_PerspektifDuzeltmeForm(Form parentForm)
@@ -25,8 +27,7 @@ namespace Goruntu_Isleme_Odevleri
             haftaFormu = parentForm;
             this.Text = "Proje 1: Perspektif Düzeltme ve Alias Giderme";
 
-            // Arayüz Elemanları
-            lblOriginal = new Label() { Text = "1. Orijinal Resim (4 Nokta Seçin)", Location = new Point(25, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
+            lblOriginal = new Label() { Text = "1. Orijinal Resim (4 Köşe Seçin)", Location = new Point(25, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
             pcbOriginal = new PictureBox()
             {
                 Location = new Point(25, 45),
@@ -39,26 +40,31 @@ namespace Goruntu_Isleme_Odevleri
             pcbOriginal.MouseClick += PcbOriginal_MouseClick;
             pcbOriginal.Paint += PcbOriginal_Paint;
 
-            lblResult = new Label() { Text = "2. Sonuç", Location = new Point(550, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
-            pcbResult = new PictureBox()
+            lblResult = new Label() { Text = "2. Sonuç (Perspektif Düzeltilmiş)", Location = new Point(550, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
+
+            pnlResult = new Panel()
             {
                 Location = new Point(550, 45),
                 Size = new Size(500, 400),
-                BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.LightGray,
-                SizeMode = PictureBoxSizeMode.AutoSize
+                AutoScroll = true, // Resim büyükse kaydırma çubuğu çıkar
+                BorderStyle = BorderStyle.Fixed3D
             };
-            Panel pnlResult = new Panel() { Location = new Point(550, 45), Size = new Size(500, 400), AutoScroll = true, BorderStyle = BorderStyle.Fixed3D };
+
+            pcbResult = new PictureBox()
+            {
+                Location = new Point(0, 0), // Panel içinde 0,0
+                SizeMode = PictureBoxSizeMode.AutoSize 
+            };
             pnlResult.Controls.Add(pcbResult);
 
-            lblInfo = new Label() { Text = "Sırasıyla: Sol-Üst, Sağ-Üst, Sol-Alt, Sağ-Alt", Location = new Point(25, 450), AutoSize = true, ForeColor = Color.Blue };
+            lblInfo = new Label() { Text = "Sırasıyla: Sol-Üst, Sağ-Üst, Sağ-Alt, Sol-Alt", Location = new Point(25, 450), AutoSize = true, ForeColor = Color.Blue };
 
             int btnY = 480;
             btnYukle = new Button() { Text = "Resim Yükle", Location = new Point(25, btnY), Size = new Size(120, 40) };
             btnYukle.Click += new EventHandler(btnYukle_Click);
 
             btnTemizle = new Button() { Text = "Noktaları Sıfırla", Location = new Point(155, btnY), Size = new Size(120, 40) };
-            btnTemizle.Click += (s, e) => { sourcePoints.Clear(); pcbOriginal.Invalidate(); lblInfo.Text = "Noktalar temizlendi."; };
+            btnTemizle.Click += (s, e) => { sourcePoints.Clear(); pcbOriginal.Invalidate(); lblInfo.Text = "Noktalar temizlendi."; btnDuzelt.Enabled = false; };
 
             btnDuzelt = new Button() { Text = "Perspektifi Düzelt", Location = new Point(285, btnY), Size = new Size(150, 40), BackColor = Color.LightBlue, Enabled = false };
             btnDuzelt.Click += new EventHandler(btnDuzelt_Click);
@@ -81,7 +87,6 @@ namespace Goruntu_Isleme_Odevleri
             this.MaximizeBox = false;
             this.FormClosed += new FormClosedEventHandler(ProjeForm_FormClosed);
         }
-
         private void btnYukle_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -90,11 +95,12 @@ namespace Goruntu_Isleme_Odevleri
             {
                 originalBitmap = new Bitmap(dialog.FileName);
                 pcbOriginal.Image = originalBitmap;
+
                 sourcePoints.Clear();
                 pcbResult.Image = null;
                 btnDuzelt.Enabled = false;
                 btnAliasDuzelt.Enabled = false;
-                lblInfo.Text = "Lütfen sırasıyla 4 köşe seçin: Sol-Üst, Sağ-Üst, Sol-Alt, Sağ-Alt";
+                lblInfo.Text = "Lütfen sırasıyla 4 köşe seçin: Sol-Üst, Sağ-Üst, Sağ-Alt, Sol-Alt";
             }
         }
 
@@ -102,10 +108,11 @@ namespace Goruntu_Isleme_Odevleri
         {
             if (originalBitmap == null || sourcePoints.Count >= 4) return;
 
-            // PictureBox Zoom modunda olduğu için koordinatları dönüştür
+            // PictureBox Zoom modunda olduğu için, tıklanan ekran koordinatını
+            // gerçek resim koordinatına çevirmemiz gerekir.
             Point imgPoint = ConvertPointToImage(e.Location);
             sourcePoints.Add(imgPoint);
-            pcbOriginal.Invalidate();
+            pcbOriginal.Invalidate(); // Paint olayını tetikle
 
             if (sourcePoints.Count == 4)
             {
@@ -114,7 +121,7 @@ namespace Goruntu_Isleme_Odevleri
             }
             else
             {
-                lblInfo.Text = $"{sourcePoints.Count} nokta seçildi...";
+                lblInfo.Text = $"{sourcePoints.Count}. nokta seçildi...";
             }
         }
 
@@ -127,12 +134,13 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     for (int i = 0; i < sourcePoints.Count; i++)
                     {
-                        // Gerçek resim koordinatını ekran koordinatına çevirip çiz
+                        // Gerçek resim koordinatını tekrar ekran koordinatına çevirip çiz
                         Point p = ConvertPointFromImage(sourcePoints[i]);
                         e.Graphics.FillEllipse(brush, p.X - 5, p.Y - 5, 10, 10);
                         e.Graphics.DrawString((i + 1).ToString(), new Font("Arial", 12), Brushes.Red, p.X + 5, p.Y + 5);
                     }
-                    // Noktaları birleştiren çizgiler
+
+                    // Noktaları birleştiren dörtgeni çiz
                     if (sourcePoints.Count == 4)
                     {
                         Point[] pts = new Point[4];
@@ -143,63 +151,68 @@ namespace Goruntu_Isleme_Odevleri
             }
         }
 
+        // PERSPEKTİF DÜZELTME (FORWARD MAPPING)
         private void btnDuzelt_Click(object sender, EventArgs e)
         {
             if (sourcePoints.Count != 4) return;
 
-            // Üst ve alt kenarların en uzunu genişlik, sol ve sağın en uzunu yükseklik olsun.
-            double w1 = Distance(sourcePoints[0], sourcePoints[1]);
-            double w2 = Distance(sourcePoints[2], sourcePoints[3]);
-            double h1 = Distance(sourcePoints[0], sourcePoints[2]);
-            double h2 = Distance(sourcePoints[1], sourcePoints[3]);
+            // Hedef boyutları (En geniş kenara göre) hesapla
+            double w1 = Distance(sourcePoints[0], sourcePoints[1]); // Üst
+            double w2 = Distance(sourcePoints[2], sourcePoints[3]); // Alt
+            double h1 = Distance(sourcePoints[0], sourcePoints[3]); // Sol
+            double h2 = Distance(sourcePoints[1], sourcePoints[2]); // Sağ
 
             int targetWidth = (int)Math.Max(w1, w2);
             int targetHeight = (int)Math.Max(h1, h2);
 
-            // Hedef Noktalar (Düzeltilmiş Dikdörtgen)
-            // x1,y1 -> 0,0
-            // x2,y2 -> W,0
-            // x3,y3 -> 0,H
-            // x4,y4 -> W,H
-            // Not: Sıralama: Sol-Üst, Sağ-Üst, Sol-Alt, Sağ-Alt
+            // Hedef Noktalar (Düzeltilmiş Dikdörtgen Koordinatları)
             double[,] targetPoints = {
-                { 0, 0 },
-                { targetWidth, 0 },
-                { 0, targetHeight },
-                { targetWidth, targetHeight }
+                { 0, 0 },                       // Sol-Üst
+                { targetWidth, 0 },             // Sağ-Üst
+                { 0, targetHeight },            // Sol-Alt
+                { targetWidth, targetHeight }   // Sağ-Alt
             };
 
-            // Matris Katsayılarını Hesapla (Gauss-Jordan ile 8x8 sistem çözümü)
-            matrixParams = CalculatePerspectiveMatrix(sourcePoints, targetPoints);
+            double[,] correctedTargetPoints = {
+                 { 0, 0 },                      
+                 { targetWidth, 0 },            
+                 { targetWidth, targetHeight }, 
+                 { 0, targetHeight }           
+            };
 
-            // İleri Eşleme (Forward Mapping) ile Dönüştür
-            // Bu işlem alias (boşluk) oluşturur.
+
+            // Matris Katsayılarını Hesapla (Gauss-Jordan ile 8x8 sistem)
+            matrixParams = CalculatePerspectiveMatrix(sourcePoints, correctedTargetPoints);
+
+            // Forward Mapping ile Dönüştür
             transformedBitmap = new Bitmap(targetWidth, targetHeight);
 
-            // Arka planı siyah yap ki boşluklar görünsün.
+            // Arka planı SİYAH yap (Böylece alias/boşluk noktaları görünür olur)
             using (Graphics g = Graphics.FromImage(transformedBitmap)) g.Clear(Color.Black);
 
             for (int y = 0; y < originalBitmap.Height; y++)
             {
                 for (int x = 0; x < originalBitmap.Width; x++)
                 {
-                    // Kaynak (x,y) noktasını Hedef (X,Y) noktasına dönüştür
-                    // Formül: 
+                    // Perspektif Formülü:
                     // X = (ax + by + c) / (gx + hy + 1)
                     // Y = (dx + ey + f) / (gx + hy + 1)
 
                     double denominator = matrixParams[6] * x + matrixParams[7] * y + 1.0;
-                    if (Math.Abs(denominator) < 0.0001) continue; // Sıfıra bölme hatası önlemi
 
-                    double X_new = (matrixParams[0] * x + matrixParams[1] * y + matrixParams[2]) / denominator;
-                    double Y_new = (matrixParams[3] * x + matrixParams[4] * y + matrixParams[5]) / denominator;
-
-                    int targetX = (int)Math.Round(X_new);
-                    int targetY = (int)Math.Round(Y_new);
-
-                    if (targetX >= 0 && targetX < targetWidth && targetY >= 0 && targetY < targetHeight)
+                    if (Math.Abs(denominator) > 0.00001)
                     {
-                        transformedBitmap.SetPixel(targetX, targetY, originalBitmap.GetPixel(x, y));
+                        double X_new = (matrixParams[0] * x + matrixParams[1] * y + matrixParams[2]) / denominator;
+                        double Y_new = (matrixParams[3] * x + matrixParams[4] * y + matrixParams[5]) / denominator;
+
+                        int targetX = (int)Math.Round(X_new);
+                        int targetY = (int)Math.Round(Y_new);
+
+                        // Eğer hesaplanan nokta hedef resim sınırları içindeyse boya
+                        if (targetX >= 0 && targetX < targetWidth && targetY >= 0 && targetY < targetHeight)
+                        {
+                            transformedBitmap.SetPixel(targetX, targetY, originalBitmap.GetPixel(x, y));
+                        }
                     }
                 }
             }
@@ -209,6 +222,7 @@ namespace Goruntu_Isleme_Odevleri
             lblInfo.Text = "Perspektif düzeltildi. Siyah noktalar (Alias) oluştu. Düzeltmek için butona basın.";
         }
 
+        // ALIAS (BOŞLUK) DOLDURMA
         private void btnAliasDuzelt_Click(object sender, EventArgs e)
         {
             if (transformedBitmap == null) return;
@@ -223,12 +237,12 @@ namespace Goruntu_Isleme_Odevleri
                 for (int x = 1; x < w - 1; x++)
                 {
                     Color c = fixedBitmap.GetPixel(x, y);
-                    // Eğer piksel siyahsa (boşluksa)
+
                     if (c.R == 0 && c.G == 0 && c.B == 0)
                     {
                         int rSum = 0, gSum = 0, bSum = 0, count = 0;
 
-                        // 3x3 Komşuluk (Etraftaki 8 piksel + kendisi)
+                        // 3x3 Komşuluk (Etraftaki 8 piksel)
                         for (int ky = -1; ky <= 1; ky++)
                         {
                             for (int kx = -1; kx <= 1; kx++)
@@ -236,7 +250,7 @@ namespace Goruntu_Isleme_Odevleri
                                 if (kx == 0 && ky == 0) continue;
 
                                 Color neighbor = transformedBitmap.GetPixel(x + kx, y + ky);
-                                // Eğer komşu siyah değilse hesaba kat
+
                                 if (!(neighbor.R == 0 && neighbor.G == 0 && neighbor.B == 0))
                                 {
                                     rSum += neighbor.R;
@@ -258,12 +272,8 @@ namespace Goruntu_Isleme_Odevleri
             lblInfo.Text = "Alias (boşluk) düzeltme tamamlandı.";
         }
 
-        // YARDIMCI METOTLAR
-
-        // 8x8 Matris Çözümü (Gauss-Jordan Yöntemi)
         private double[] CalculatePerspectiveMatrix(List<Point> src, double[,] dst)
         {
-            // A * h = B sistemini kuruyoruz. h vektörü [a,b,c,d,e,f,g,h] bilinmeyenleridir.
             double[,] A = new double[8, 8];
             double[] B = new double[8];
 
@@ -274,7 +284,11 @@ namespace Goruntu_Isleme_Odevleri
                 double X = dst[i, 0];
                 double Y = dst[i, 1];
 
-                // X denklemi: x*a + y*b + c - x*X*g - y*X*h = X
+                // Formül türetimi:
+                // X(gx + hy + 1) = ax + by + c  =>  ax + by + c - g(xX) - h(yX) = X
+                // Y(gx + hy + 1) = dx + ey + f  =>  dx + ey + f - g(xY) - h(yY) = Y
+
+                // X denklemi için satır (2*i)
                 A[2 * i, 0] = x;
                 A[2 * i, 1] = y;
                 A[2 * i, 2] = 1;
@@ -285,7 +299,7 @@ namespace Goruntu_Isleme_Odevleri
                 A[2 * i, 7] = -y * X;
                 B[2 * i] = X;
 
-                // Y denklemi: x*d + y*e + f - x*Y*g - y*Y*h = Y
+                // Y denklemi için satır (2*i + 1)
                 A[2 * i + 1, 0] = 0;
                 A[2 * i + 1, 1] = 0;
                 A[2 * i + 1, 2] = 0;
@@ -300,7 +314,6 @@ namespace Goruntu_Isleme_Odevleri
             return SolveGaussian(A, B);
         }
 
-        // Basit Gauss Eliminasyonu
         private double[] SolveGaussian(double[,] Matrix, double[] Result)
         {
             int n = 8;
@@ -318,11 +331,11 @@ namespace Goruntu_Isleme_Odevleri
                     }
                 }
 
-                // Satırları değiştir
+                // Satır değiştirme
                 for (int k = i; k < n; k++) { double tmp = Matrix[maxRow, k]; Matrix[maxRow, k] = Matrix[i, k]; Matrix[i, k] = tmp; }
                 { double tmp = Result[maxRow]; Result[maxRow] = Result[i]; Result[i] = tmp; }
 
-                // Sıfırlama
+                // Eliminasyon
                 for (int k = i + 1; k < n; k++)
                 {
                     double c = -Matrix[k, i] / Matrix[i, i];
@@ -351,7 +364,7 @@ namespace Goruntu_Isleme_Odevleri
             return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
         }
 
-        // Zoom Koordinat Dönüşümleri
+        // KOORDİNAT DÖNÜŞÜMLERİ (ZOOM MODU İÇİN)
         private Point ConvertPointToImage(Point pcbPoint)
         {
             if (pcbOriginal.Image == null) return pcbPoint;

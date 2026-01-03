@@ -52,6 +52,18 @@
     <Compile Include="Haftlar\Hafta1Form.Designer.cs">
       <DependentUpon>Hafta1Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Haftlar\Hafta10Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta10Form.Designer.cs">
+      <DependentUpon>Hafta10Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Haftlar\Hafta9Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Haftlar\Hafta9Form.Designer.cs">
+      <DependentUpon>Hafta9Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Haftlar\Hafta8Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -430,6 +442,12 @@
     </Compile>
     <Compile Include="Projeler\Hafta 8\Proje1_CevizFindikForm.Designer.cs">
       <DependentUpon>Proje1_CevizFindikForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Projeler\Hafta 10\Proje1_MantiksalOperatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 10\Proje1_MantiksalOperatorForm.Designer.cs">
+      <DependentUpon>Proje1_MantiksalOperatorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

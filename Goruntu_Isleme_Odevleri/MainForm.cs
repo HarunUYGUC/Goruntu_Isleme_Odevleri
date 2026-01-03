@@ -29,7 +29,7 @@ namespace Goruntu_Isleme_Odevleri
             haftaPaneli.BorderStyle = BorderStyle.Fixed3D;
             this.Controls.Add(haftaPaneli);
 
-            int butonSayisi = 8;
+            int butonSayisi = 10;
             int baslangicY = 15;
             int bosluk = 10;
             int butonYukseklik = 45;
@@ -105,6 +105,16 @@ namespace Goruntu_Isleme_Odevleri
                     Hafta8Form hafta8Form = new Hafta8Form(this);
                     this.Hide();
                     hafta8Form.Show();
+                    break;
+                case 9:
+                    Hafta9Form hafta9Form = new Hafta9Form(this);
+                    this.Hide();
+                    hafta9Form.Show();
+                    break;
+                case 10:
+                    Hafta10Form hafta10Form = new Hafta10Form(this);
+                    this.Hide();
+                    hafta10Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta {haftaNumarasi} projeleri henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging; // Hızlı işlem için gerekli
+using System.Runtime.InteropServices; // Marshal.Copy için gerekli
 using System.Windows.Forms;
 
 namespace Goruntu_Isleme_Odevleri
@@ -18,12 +20,11 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 4: Gauss Filtresinde Standart Sapma (Sigma) Etkisi";
+            this.Text = "Proje 4: Gauss Filtresi";
 
             int pcbSize = 350;
             int margin = 25;
 
-            // Resim Kutuları
             lblOriginal = new Label() { Text = "Orijinal Resim", Location = new Point(margin + 100, margin - 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
             pcbOriginal = new PictureBox() { Location = new Point(margin, margin), Size = new Size(pcbSize, pcbSize), BorderStyle = BorderStyle.FixedSingle, BackColor = Color.LightGray, SizeMode = PictureBoxSizeMode.Zoom };
 
@@ -32,7 +33,6 @@ namespace Goruntu_Isleme_Odevleri
 
             int controlsY = margin + pcbSize + 20;
 
-            // Kontroller
             btnYukle = new Button() { Text = "Resim Yükle", Location = new Point(margin, controlsY), Size = new Size(150, 40) };
             btnYukle.Click += new EventHandler(btnYukle_Click);
 
@@ -52,10 +52,17 @@ namespace Goruntu_Isleme_Odevleri
             btnUygula = new Button() { Text = "Uygula", Location = new Point(430, controlsY), Size = new Size(120, 40), BackColor = Color.LightGreen, Enabled = false };
             btnUygula.Click += new EventHandler(btnUygula_Click);
 
-            lblKernelInfo = new Label() { Text = "Otomatik Hesaplanan Kernel Boyutu: -", Location = new Point(570, controlsY + 12), AutoSize = true, ForeColor = Color.Blue };
-
-            btnGeri = new Button() { Text = "Hafta Menüsüne Dön", Location = new Point(this.ClientSize.Width - margin - 150, controlsY), Size = new Size(150, 40), BackColor = Color.LightCoral };
+            btnGeri = new Button() { Text = "Geri Dön", Location = new Point(700, controlsY), Size = new Size(120, 40), BackColor = Color.LightCoral };
             btnGeri.Click += new EventHandler(btnGeri_Click);
+
+            lblKernelInfo = new Label()
+            {
+                Text = "Otomatik Hesaplanan Kernel Boyutu: -",
+                Location = new Point(margin, controlsY + 50), 
+                AutoSize = true,
+                ForeColor = Color.Blue,
+                Font = new Font("Consolas", 10)
+            };
 
             this.Controls.AddRange(new Control[] { lblOriginal, pcbOriginal, lblResult, pcbResult, btnYukle, lblSigma, nudSigma, btnUygula, lblKernelInfo, btnGeri });
         }
@@ -63,7 +70,7 @@ namespace Goruntu_Isleme_Odevleri
         private void InitializeComponent()
         {
             this.Name = "Proje4_GaussSigmaForm";
-            this.Size = new Size(850, 500);
+            this.Size = new Size(880, 550);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -76,7 +83,15 @@ namespace Goruntu_Isleme_Odevleri
             dialog.Filter = "Resim Dosyaları|*.jpg;*.jpeg;*.png;*.bmp";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                originalBitmap = new Bitmap(dialog.FileName);
+                Bitmap temp = new Bitmap(dialog.FileName);
+
+                originalBitmap = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
+                using (Graphics g = Graphics.FromImage(originalBitmap))
+                {
+                    g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
+                }
+                temp.Dispose();
+
                 pcbOriginal.Image = originalBitmap;
                 pcbResult.Image = null;
                 btnUygula.Enabled = true;
@@ -90,26 +105,25 @@ namespace Goruntu_Isleme_Odevleri
             this.Cursor = Cursors.WaitCursor;
             double sigma = (double)nudSigma.Value;
 
-            // Sigma'ya göre ideal kernel boyutunu hesapla.
-            // Kural: Kernel boyutu yaklaşık 6*sigma olmalıdır (ve tek sayı olmalıdır).
-            // Çünkü Gauss eğrisi 3 sigma uzaklıkta neredeyse sıfıra iner (-3 sigma'dan +3 sigma'ya = 6 sigma).
+            // Kernel Boyutu Hesabı: 6 * Sigma (Gauss dağılımının %99.7'sini kapsar)
             int kernelSize = (int)Math.Ceiling(sigma * 6);
             if (kernelSize % 2 == 0) kernelSize++; // Tek sayı yap
-            if (kernelSize < 3) kernelSize = 3; // Minimum boyut
+            if (kernelSize < 3) kernelSize = 3;
 
-            lblKernelInfo.Text = $"Otomatik Hesaplanan Kernel Boyutu: {kernelSize}x{kernelSize}";
+            lblKernelInfo.Text = $"Sigma: {sigma} -> Kernel Boyutu: {kernelSize}x{kernelSize}";
 
-            pcbResult.Image = ApplyGaussianFilter(originalBitmap, kernelSize, sigma);
+            pcbResult.Image = ApplyGaussianFilterFast(originalBitmap, kernelSize, sigma);
+
             this.Cursor = Cursors.Default;
         }
 
-        private Bitmap ApplyGaussianFilter(Bitmap srcImage, int kernelSize, double sigma)
+        private Bitmap ApplyGaussianFilterFast(Bitmap srcImage, int kernelSize, double sigma)
         {
             double[,] kernel = CalculateGaussianKernel(kernelSize, sigma);
-            return ApplyConvolution(srcImage, kernel);
+            return ApplyConvolutionFast(srcImage, kernel);
         }
 
-        // 2D Gaussian Kernel Formülü
+        // 2D Gaussian Kernel Formülü 
         private double[,] CalculateGaussianKernel(int size, double sigma)
         {
             double[,] kernel = new double[size, size];
@@ -122,64 +136,94 @@ namespace Goruntu_Isleme_Odevleri
             {
                 for (int x = -radius; x <= radius; x++)
                 {
-                    // Formül: (1 / (2*pi*sigma^2)) * e^(-(x^2 + y^2) / (2*sigma^2))
                     double distance = x * x + y * y;
                     double value = Math.Exp(-distance / twoSigmaSquare) / piSigmaSquare;
-
                     kernel[y + radius, x + radius] = value;
                     sum += value;
                 }
             }
 
-            // Normalize et (Matris toplamını 1 yap, yoksa resim parlaklaşır/kararır)
+            // Normalize et
             for (int y = 0; y < size; y++)
-            {
                 for (int x = 0; x < size; x++)
-                {
                     kernel[y, x] /= sum;
-                }
-            }
+
             return kernel;
         }
 
-        // Konvolüsyon İşlemi (Filtreyi resme uygula)
-        private Bitmap ApplyConvolution(Bitmap srcImage, double[,] kernel)
+        private Bitmap ApplyConvolutionFast(Bitmap srcImage, double[,] kernel)
         {
-            Bitmap dstImage = new Bitmap(srcImage.Width, srcImage.Height);
+            int width = srcImage.Width;
+            int height = srcImage.Height;
             int kernelSize = kernel.GetLength(0);
             int radius = kernelSize / 2;
 
-            // Hız için LockBits kullanılabilir ama anlaşılırlık için GetPixel/SetPixel ile devam ediyoruz.
-            for (int y = 0; y < srcImage.Height; y++)
+            // Sonuç resmi (24 bit formatında)
+            Bitmap dstImage = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+
+            // 1. Belleği Kilitle (LockBits)
+            BitmapData srcData = srcImage.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            BitmapData dstData = dstImage.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+            // 2. Verileri Byte Dizisine Kopyala
+            int bytes = srcData.Stride * height;
+            byte[] srcBuffer = new byte[bytes];
+            byte[] dstBuffer = new byte[bytes];
+
+            Marshal.Copy(srcData.Scan0, srcBuffer, 0, bytes);
+
+            // Stride: Bir satırın bellekte kapladığı gerçek genişlik (Padding dahil)
+            int stride = srcData.Stride;
+
+            // 3. Piksel İşleme (Döngüler)
+            for (int y = 0; y < height; y++)
             {
-                for (int x = 0; x < srcImage.Width; x++)
+                for (int x = 0; x < width; x++)
                 {
                     double rSum = 0, gSum = 0, bSum = 0;
 
+                    // Kernel Döngüsü
                     for (int ky = -radius; ky <= radius; ky++)
                     {
+                        int nY = y + ky;
+
+                        // Kenar kontrolü (Clamp yöntemi - Sınır taşarsa en yakın pikseli al)
+                        if (nY < 0) nY = 0;
+                        if (nY >= height) nY = height - 1;
+
+                        int rowOffset = nY * stride;
+
                         for (int kx = -radius; kx <= radius; kx++)
                         {
-                            // Sınır kontrolü (Padding: Edge replication)
-                            int pX = Math.Max(0, Math.Min(srcImage.Width - 1, x + kx));
-                            int pY = Math.Max(0, Math.Min(srcImage.Height - 1, y + ky));
+                            int nX = x + kx;
 
-                            Color p = srcImage.GetPixel(pX, pY);
+                            if (nX < 0) nX = 0;
+                            if (nX >= width) nX = width - 1;
+
+                            // 24bpp olduğu için her piksel 3 byte (Blue, Green, Red)
+                            int pixelIndex = rowOffset + (nX * 3);
+
                             double weight = kernel[ky + radius, kx + radius];
 
-                            rSum += p.R * weight;
-                            gSum += p.G * weight;
-                            bSum += p.B * weight;
+                            bSum += srcBuffer[pixelIndex] * weight;     // Blue
+                            gSum += srcBuffer[pixelIndex + 1] * weight; // Green
+                            rSum += srcBuffer[pixelIndex + 2] * weight; // Red
                         }
                     }
 
-                    int r = Math.Max(0, Math.Min(255, (int)rSum));
-                    int g = Math.Max(0, Math.Min(255, (int)gSum));
-                    int b = Math.Max(0, Math.Min(255, (int)bSum));
+                    int dstIndex = (y * stride) + (x * 3);
 
-                    dstImage.SetPixel(x, y, Color.FromArgb(r, g, b));
+                    dstBuffer[dstIndex] = (byte)Math.Min(255, Math.Max(0, bSum));
+                    dstBuffer[dstIndex + 1] = (byte)Math.Min(255, Math.Max(0, gSum));
+                    dstBuffer[dstIndex + 2] = (byte)Math.Min(255, Math.Max(0, rSum));
                 }
             }
+
+            Marshal.Copy(dstBuffer, 0, dstData.Scan0, bytes);
+
+            srcImage.UnlockBits(srcData);
+            dstImage.UnlockBits(dstData);
+
             return dstImage;
         }
 

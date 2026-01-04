@@ -40,6 +40,10 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 1: Boş";
                 }
+                else if (i == 5)
+                {
+                    projeButon.Text = "Proje 5: Hareket Sensörü ve Hedef Takibi";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i + " (Henüz Eklenmedi)";
@@ -80,6 +84,11 @@ namespace Goruntu_Isleme_Odevleri
 
             switch (projeNumarasi)
             {
+                case 5:
+                    Proje5_HareketTakibiForm proje5Form = new Proje5_HareketTakibiForm(this);
+                    this.Hide();
+                    proje5Form.Show();
+                    break;
                 default:
                     MessageBox.Show($"Hafta 9 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;

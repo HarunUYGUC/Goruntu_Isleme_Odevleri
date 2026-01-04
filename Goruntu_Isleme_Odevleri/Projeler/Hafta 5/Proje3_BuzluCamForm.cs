@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Goruntu_Isleme_Odevleri
@@ -12,18 +15,16 @@ namespace Goruntu_Isleme_Odevleri
         private Form haftaFormu;
 
         private Bitmap originalBitmap;
-        private Point startPoint;
-        private Rectangle selectionRect;
+        private List<Point> selectionPoints = new List<Point>();
         private bool isSelecting = false;
 
-        // Bulanıklık şiddeti (Kernel boyutu)
         private const int BLUR_SIZE = 15;
 
         public Proje3_BuzluCamForm(Form parentForm)
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 3: Bölgesel Bulanıklaştırma (Buzlu Cam)";
+            this.Text = "Proje 3: Serbest Alan Bulanıklaştırma";
 
             pcbResim = new PictureBox()
             {
@@ -34,14 +35,13 @@ namespace Goruntu_Isleme_Odevleri
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Cursor = Cursors.Cross
             };
+
             pcbResim.MouseDown += PcbResim_MouseDown;
-            pcbResim.MouseMove += PcbResim_MouseMove;
-            pcbResim.MouseUp += PcbResim_MouseUp;
             pcbResim.Paint += PcbResim_Paint;
 
             lblBilgi = new Label()
             {
-                Text = "Resim yükleyin ve gizlemek istediğiniz alanı fareyle seçin.",
+                Text = "Sol Tık: Nokta Ekle | Sağ Tık: Alanı Kapat ve Bulanıklaştır",
                 Location = new Point(25, 540),
                 AutoSize = true,
                 Font = new Font("Arial", 10, FontStyle.Bold)
@@ -74,115 +74,111 @@ namespace Goruntu_Isleme_Odevleri
             {
                 originalBitmap = new Bitmap(dialog.FileName);
                 pcbResim.Image = originalBitmap;
-                selectionRect = Rectangle.Empty;
+                selectionPoints.Clear();
             }
         }
-
-        // Fare Olayları (Seçim) 
 
         private void PcbResim_MouseDown(object sender, MouseEventArgs e)
         {
             if (originalBitmap == null) return;
-            isSelecting = true;
-            startPoint = e.Location;
-            selectionRect = new Rectangle(e.Location, new Size(0, 0));
-            pcbResim.Invalidate();
-        }
 
-        private void PcbResim_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!isSelecting || originalBitmap == null) return;
-
-            int x = Math.Min(startPoint.X, e.X);
-            int y = Math.Min(startPoint.Y, e.Y);
-            int w = Math.Abs(startPoint.X - e.X);
-            int h = Math.Abs(startPoint.Y - e.Y);
-
-            selectionRect = new Rectangle(x, y, w, h);
-            pcbResim.Invalidate();
-        }
-
-        private void PcbResim_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (!isSelecting) return;
-            isSelecting = false;
-
-            if (selectionRect.Width > 5 && selectionRect.Height > 5)
+            if (e.Button == MouseButtons.Left)
             {
-                ApplyBlurToSelection();
+                selectionPoints.Add(e.Location);
+                pcbResim.Invalidate();
             }
-            // Seçim karesini temizle (işlem bittiğinde çizgi kalmasın)
-            selectionRect = Rectangle.Empty;
-            pcbResim.Invalidate();
+            else if (e.Button == MouseButtons.Right && selectionPoints.Count > 2)
+            {
+                // Sağ tıklandığında ve en az 3 nokta varsa alanı kapat ve uygula
+                ApplyBlurToPolygon();
+                selectionPoints.Clear();
+                pcbResim.Invalidate();
+            }
         }
 
         private void PcbResim_Paint(object sender, PaintEventArgs e)
         {
-            if (selectionRect.Width > 0 && selectionRect.Height > 0)
+            if (selectionPoints.Count > 1)
             {
                 using (Pen pen = new Pen(Color.Red, 2))
                 {
-                    pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                    e.Graphics.DrawRectangle(pen, selectionRect);
+                    pen.DashStyle = DashStyle.Dash;
+                    // Mevcut noktalar arasına çizgi çek
+                    e.Graphics.DrawLines(pen, selectionPoints.ToArray());
+
+                    // Eğer 2'den fazla nokta varsa son noktayı ilk noktaya hayali bağla
+                    if (selectionPoints.Count > 2)
+                    {
+                        e.Graphics.DrawLine(pen, selectionPoints.Last(), selectionPoints.First());
+                    }
                 }
+            }
+
+            // Noktaları belirginleştir
+            foreach (var pt in selectionPoints)
+            {
+                e.Graphics.FillEllipse(Brushes.Yellow, pt.X - 3, pt.Y - 3, 6, 6);
             }
         }
 
-        // Bölgesel Bulanıklaştırma 
-        private void ApplyBlurToSelection()
+        private void ApplyBlurToPolygon()
         {
-            if (originalBitmap == null) return;
+            if (originalBitmap == null || selectionPoints.Count < 3) return;
 
-            Rectangle realRect = GetImageRectangle(selectionRect);
-            if (realRect.Width <= 0 || realRect.Height <= 0) return;
+            // Ekran koordinatlarını resim koordinatlarına çevir
+            List<Point> realPoints = selectionPoints.Select(p => GetImagePoint(p)).ToList();
 
-            // Orijinal resim üzerinde işlem yapacağız
-            // Basit ve hızlı bir Mean (Ortalama) filtresi uygulayalım.
-            // Performans için tüm resmi değil, sadece seçili alanı işleyeceğiz.
+            // Seçili alanı kapsayan bir GraphicsPath ve Region oluştur (İçeride mi kontrolü için)
+            GraphicsPath path = new GraphicsPath();
+            path.AddPolygon(realPoints.ToArray());
+            Region region = new Region(path);
 
-            Bitmap tempBmp = new Bitmap(originalBitmap); // Geçici kopya (kaynak)
+            // İşlem yapılacak sınırları belirle (Performans için)
+            Rectangle bounds = Rectangle.Round(path.GetBounds());
+
+            Bitmap tempBmp = new Bitmap(originalBitmap);
             int radius = BLUR_SIZE / 2;
 
-            // Sadece seçili dikdörtgenin içindeki pikselleri gez
-            for (int y = realRect.Top; y < realRect.Bottom; y++)
+            for (int y = bounds.Top; y < bounds.Bottom; y++)
             {
-                for (int x = realRect.Left; x < realRect.Right; x++)
+                for (int x = bounds.Left; x < bounds.Right; x++)
                 {
-                    // Güvenlik kontrolü (resim sınırları)
-                    if (x < 0 || x >= originalBitmap.Width || y < 0 || y >= originalBitmap.Height) continue;
-
-                    int rSum = 0, gSum = 0, bSum = 0, count = 0;
-
-                    // Çekirdek (Kernel) Döngüsü
-                    for (int ky = -radius; ky <= radius; ky++)
+                    // Sınır ve "Nokta Çokgenin içinde mi?" kontrolü
+                    if (x >= 0 && x < originalBitmap.Width && y >= 0 && y < originalBitmap.Height)
                     {
-                        for (int kx = -radius; kx <= radius; kx++)
+                        if (region.IsVisible(x, y))
                         {
-                            int pX = x + kx;
-                            int pY = y + ky;
+                            int rSum = 0, gSum = 0, bSum = 0, count = 0;
 
-                            if (pX >= 0 && pX < tempBmp.Width && pY >= 0 && pY < tempBmp.Height)
+                            for (int ky = -radius; ky <= radius; ky++)
                             {
-                                Color p = tempBmp.GetPixel(pX, pY);
-                                rSum += p.R;
-                                gSum += p.G;
-                                bSum += p.B;
-                                count++;
+                                for (int kx = -radius; kx <= radius; kx++)
+                                {
+                                    int pX = x + kx;
+                                    int pY = y + ky;
+
+                                    if (pX >= 0 && pX < tempBmp.Width && pY >= 0 && pY < tempBmp.Height)
+                                    {
+                                        Color p = tempBmp.GetPixel(pX, pY);
+                                        rSum += p.R;
+                                        gSum += p.G;
+                                        bSum += p.B;
+                                        count++;
+                                    }
+                                }
                             }
+                            originalBitmap.SetPixel(x, y, Color.FromArgb(rSum / count, gSum / count, bSum / count));
                         }
                     }
-
-                    // Ortalamayı al ve orijinal resme yaz
-                    originalBitmap.SetPixel(x, y, Color.FromArgb(rSum / count, gSum / count, bSum / count));
                 }
             }
 
             pcbResim.Image = originalBitmap;
         }
 
-        private Rectangle GetImageRectangle(Rectangle pcbRect)
+        // Tek bir noktayı resim koordinatına çeviren yardımcı fonksiyon
+        private Point GetImagePoint(Point pcbPoint)
         {
-            if (pcbResim.Image == null) return Rectangle.Empty;
             Size pcbSize = pcbResim.ClientSize;
             Size imgSize = pcbResim.Image.Size;
             float scale;
@@ -199,17 +195,10 @@ namespace Goruntu_Isleme_Odevleri
                 offsetY = (pcbSize.Height - imgSize.Height * scale) / 2;
             }
 
-            int realX = (int)((pcbRect.X - offsetX) / scale);
-            int realY = (int)((pcbRect.Y - offsetY) / scale);
-            int realW = (int)(pcbRect.Width / scale);
-            int realH = (int)(pcbRect.Height / scale);
+            int realX = (int)((pcbPoint.X - offsetX) / scale);
+            int realY = (int)((pcbPoint.Y - offsetY) / scale);
 
-            realX = Math.Max(0, realX);
-            realY = Math.Max(0, realY);
-            if (realX + realW > imgSize.Width) realW = imgSize.Width - realX;
-            if (realY + realH > imgSize.Height) realH = imgSize.Height - realY;
-
-            return new Rectangle(realX, realY, realW, realH);
+            return new Point(realX, realY);
         }
 
         private void btnGeri_Click(object sender, EventArgs e)

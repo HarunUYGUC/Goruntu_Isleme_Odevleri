@@ -1,0 +1,7 @@
+Sobel ve Prewitt: Sonuçları birbirine çok yakındır. Genelde gürültülü (noktalı) resimlerde hatalı kenarlar bulabilirler ama işlemleri çok hızlıdır. Dikey ve yatay çizgileri güçlü olan mimari fotoğraflarda (bina resimleri) iyi çalışır.
+
+Canny: En "temiz" sonucu bu verir. Çizgileri tek piksel kalınlığına indirdiği için (inceltme işlemi) ve gürültüyü temizlediği için insan yüzü, detaylı objeler gibi karmaşık resimlerde en iyi algoritmadır.
+
+Bulanıklaştırma Farkı: Çok kalın kenarlar bulur. Detay gerektirmeyen, sadece ana hatların (silüetlerin) belli olmasını istediğin durumlarda iyidir.
+
+Aşındırma (Erosion) Farkı (Morfolojik): Kenarları çok keskin ve sert bulur. Özellikle metin içeren resimlerde veya siyah-beyaz (binary) resimlerin kenarlarını bulmada çok başarılıdır.

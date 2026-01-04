@@ -492,6 +492,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Projeler\Hafta 2\Proje7_Yorumu.txt" />
+    <Content Include="Projeler\Hafta 3\Hafta3_Proje4_Yorumu.txt" />
+    <Content Include="Projeler\Hafta 4\Hafta4_Proje1_Yorumu.txt" />
+    <Content Include="Projeler\Hafta 5\Hafta5_Proje1_Yorumu.txt" />
+    <Content Include="Projeler\Hafta 7\Hafta7_Proje1_Yorumu.txt" />
+    <Content Include="Projeler\Hafta 7\Hafta7_Proje6_Yorumu.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

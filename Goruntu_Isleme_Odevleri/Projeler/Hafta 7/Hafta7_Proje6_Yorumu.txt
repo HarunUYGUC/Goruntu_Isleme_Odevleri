@@ -1,0 +1,7 @@
+Değişken Dönüşümü: Orijinal kodda cld, cru gibi kafa karıştırıcı İngilizce kısaltmalar vardı. Bunları solAlt (Sol Alt), sagUst (Sağ Üst) gibi Türkçe ve yön belirten isimlerle değiştirdik. Bu, kodun okunabilirliğini artırdı.
+
+Liste (List) Kullanımı: Ödevde sorulan "Listeler dizi yapısının nasıl çalıştığını anlatın" kısmına şu cevabı verebilirsin:
+
+"Diziler (Array) sabit boyutludur, ancak Listeler (List) dinamiktir. Bu projede List<int[,]> kullanarak 8 adet 3x3'lük matrisi tek bir koleksiyonda topladık. Bu yapı, programın genişletilebilir olmasını sağlar. Örneğin, Robinson Compass maskeleri yerine başka kenar bulma maskeleri denemek istersek, koda if-else blokları eklemek yerine sadece listeye yeni matrisi .Add() komutuyla eklememiz yeterli olur."
+
+Algoritma: Kullanılan 5 ve -3 değerleri Kirsch Operatörüne aittir. Bu yöntem, Sobel'e göre kenar yönlerini bulmada daha hassastır ancak işlem yükü (8 matris olduğu için) daha fazladır.

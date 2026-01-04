@@ -1,0 +1,12 @@
+Piksel Boşlukları (Alias) Sorunu ve Çözümü
+Ödevde bahsedilen "Piksel boşlukları (alias)" sorunu, aslında bir resmi büyütürken yeni piksellerin nasıl doldurulacağı sorunudur.
+
+Eğer resmi büyütürken pikselleri sadece aralıklı olarak kopyalarsak (örneğin, orijinalden bir piksel al, bir piksel boş bırak), resimde delikler oluşur. Buna "boşluk" denir.
+
+Bizim kodumuzda kullandığımız "En Yakın Komşu" (Nearest Neighbor) algoritması (veya kodun içindeki srcX = x / scaleFactor mantığı), bu boşluk sorununu en temel düzeyde çözer.
+
+Nasıl Çözer? Yeni (büyütülmüş) resimdeki her bir piksel için, orijinal resimden en yakın (en uygun) pikseli bulup kopyalar.
+
+Sonuç: Örneğin resmi 2 kat büyütürseniz, orijinal resimdeki her bir piksel, yeni resimde 2x2'lik (toplam 4) piksel bloğu olarak görünür. Bu sayede arada boşluk kalmaz, ancak resim "bloklu" veya "pikselli" görünür. Bu pikselli görünüme "aliasing" denir.
+
+Daha İleri Çözüm: Aliasing'i (bloklanmayı) gidermek için "Bilinear Interpolation" veya "Bicubic Interpolation" gibi daha gelişmiş yöntemler kullanılır, ancak ödevin kapsamı "boşlukları doldurmak" olduğu için bizim yöntemimiz (Nearest Neighbor / Inverse Mapping) bu gereksinimi tam olarak karşılar ve en doğru başlangıç yöntemidir.

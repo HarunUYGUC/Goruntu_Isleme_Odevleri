@@ -1,0 +1,39 @@
+Üç farklı filtreleme yönteminin (Mean, Median, Gauss) karşılaştırması ve hangi durumlarda hangisinin daha iyi olduğuna dair analizim.
+
+1. Mean (Ortalama) Filtresi
+Nasıl Çalışır: Belirlenen bir penceredeki (örneğin 3x3) tüm piksellerin ortalamasını alır ve merkezdeki piksele atar.
+
+Avantajı: Görüntüyü yumuşatmak ve rastgele gürültüyü (Gaussian noise) azaltmak için en basit ve hızlı yöntemdir.
+
+Dezavantajı: Görüntüdeki keskin kenarları (edge) bulanıklaştırır. Detayları kaybetme riski yüksektir.
+
+Hangi Durumda İyi: Genel bir bulanıklaştırma isteniyorsa veya gürültü tüm resme homojen yayılmışsa kullanılabilir. Ancak "Tuz-Biber" gürültüsünde başarısızdır çünkü o uç değerleri (siyah ve beyaz noktaları) de ortalamaya katarak bulanık bir leke haline getirir.
+
+2. Median (Ortanca) Filtresi
+Nasıl Çalışır: Penceredeki pikselleri küçükten büyüğe sıralar ve tam ortadaki değeri (medyanı) alır.
+
+Avantajı: Uç değerleri (aşırı parlak veya aşırı karanlık noktaları) tamamen yok saydığı için Tuz-Biber (Salt & Pepper) gürültüsünü temizlemede mükemmeldir. Ayrıca kenarları (edges) koruma konusunda Mean filtresinden çok daha başarılıdır.
+
+Dezavantajı: Hesaplama maliyeti Mean filtresine göre biraz daha yüksektir (sıralama işlemi nedeniyle).
+
+Hangi Durumda İyi: Kesinlikle gürültülü, noktalı (tuz-biber) resimlerde en iyi sonucu verir. Kenarları koruyarak temizlik yapar.
+
+3. Gauss (Gaussian) Filtresi
+Nasıl Çalışır: Ortalama filtresine benzer ama piksellere farklı ağırlıklar verir. Merkeze yakın piksellerin etkisi daha fazlayken, kenardakilerin etkisi daha azdır (Çan eğrisi mantığı).
+
+Avantajı: Mean filtresine göre daha doğal ve yumuşak bir bulanıklık sağlar. Görüntüdeki detayları Mean filtresi kadar yok etmez.
+
+Dezavantajı: Kenarları yine de bir miktar yumuşatır.
+
+Hangi Durumda İyi: Fotoğraflarda "yumuşatma" (smoothing) efekti yaratmak, cilt pürüzsüzleştirmek veya arka planı flulaştırmak için idealdir. Gaussian gürültüsünü gidermede çok etkilidir.
+
+Senin Gözlemin ve Sonuç
+"Median daha iyi gibi geldi bana." demen çok doğru bir tespit! Özellikle ödevde verilen "Tuz-Biber" gürültülü resim üzerinde denediysen, Median filtresi o siyah-beyaz noktaları mucizevi bir şekilde yok ederken resmin netliğini korumuştur. Mean ve Gauss filtreleri ise o noktaları sadece biraz bulanıklaştırıp gri lekelere dönüştürmüştür.
+
+Özetle:
+
+Noktalı Gürültü (Tuz-Biber) varsa: 🏆 Median tartışmasız en iyisidir.
+
+Doğal Bulanıklık / Yumuşatma isteniyorsa: 🏆 Gauss en iyisidir.
+
+Basit ve Hızlı Bulanıklaştırma: Mean kullanılabilir ama genelde Gauss tercih edilir.

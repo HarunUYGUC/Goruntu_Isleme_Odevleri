@@ -1,0 +1,42 @@
+﻿Bu konu, özellikle görüntü işlemedeki perspektif düzeltme gibi matris tabanlı dönüşümlerde kritik bir rol oynar.
+
+
+Gauss-Jordan Yöntemi Nedir?
+
+
+Gauss-Jordan eleme yöntemi, lineer denklem sistemlerini çözmek ve matrislerin tersini bulmak için kullanılan bir algoritmadır. Temel mantığı, bir matrisi "satır işlemleri" (row operations) kullanarak birim matrise (identity matrix) dönüştürmektir.
+Eğer bir $A$ matrisinin yanına birim matris $I$'yı ekleyip $[A | I]$ şeklinde genişletilmiş bir matris oluşturursanız ve $A$'yı birim matrise dönüştürecek işlemleri tüm satıra uygularsanız, sağ taraftaki $I$ matrisi otomatik olarak $A^{-1}$ (A'nın tersi) matrisine dönüşür. Sonuç $[I | A^{-1}]$ olur.
+Satır İşlemleri Şunlardır:
+1. İki satırın yerini değiştirmek.
+2. Bir satırı sıfırdan farklı bir sayıyla çarpmak veya bölmek.
+3. Bir satırın katını başka bir satıra eklemek veya çıkarmak.
+
+
+Görüntü İşlemede (Perspektif Düzeltme) Neden Kullanılır?
+
+
+Perspektif düzeltme işleminde, bir görüntüyü bir düzlemden diğerine (örneğin eğik bir tabelayı düz bir dikdörtgene) dönüştürmek için Perspektif Dönüşüm Matrisi (Homography Matrix) kullanılır. Bu matris 3x3 boyutundadır ve 8 tane bilinmeyen katsayısı vardır ($h_{33}$ genellikle 1 kabul edilir).
+Bu 8 bilinmeyeni bulmak için, kaynak resimdeki 4 nokta $(x,y)$ ile hedef resimdeki karşılık gelen 4 nokta $(X,Y)$ arasında bir denklem sistemi kurulur. Her nokta çifti 2 denklem (biri x, biri y için) verir. 4 nokta toplamda 8 denklem oluşturur.
+Bu da bizi $A \cdot h = B$ şeklinde bir lineer denklem sistemine götürür:
+* $A$: Koordinatlardan oluşan 8x8'lik bir matris.
+* $h$: Bulmak istediğimiz 8 bilinmeyenli katsayı vektörü.
+* $B$: Hedef koordinatları içeren vektör.
+Bu sistemden $h$'yi (matris katsayılarını) bulmak için $A$'nın tersini alıp $B$ ile çarpmamız gerekir:
+
+
+
+
+$$h = A^{-1} \cdot B$$
+İşte bu $A^{-1}$ işlemini (8x8'lik bir matrisin tersini almayı) bilgisayarda en yaygın ve etkili şekilde yapan yöntemlerden biri Gauss-Jordan Eliminasyonudur.
+
+
+Programlamada Hangi Yöntem Kullanılır?
+
+
+Evet, programlamada (özellikle C#, C++, Python gibi dillerde sıfırdan yazılıyorsa) matris tersi almak için Gauss-Jordan Eliminasyonu çok sık kullanılır çünkü:
+1. Kararlıdır: Sayısal hatalara karşı (pivotlama ile birlikte) dirençlidir.
+2. Geneldir: Herhangi bir kare matris (nxn) için çalışır.
+3. Anlaşılırdır: Algoritması adım adım takip edilebilir.
+Alternatif Yöntemler:
+* LU Ayrışımı (LU Decomposition): Büyük matrisler için Gauss-Jordan'dan daha hızlı olabilir. Matrisi alt (Lower) ve üst (Upper) iki üçgen matrise ayırır.
+* Kofaktör (Cofactor) Yöntemi: Elle hesaplarken (lise/üniversite matematiğinde) sık kullanılır ama bilgisayarlar için çok yavaştır ($O(n!)$ karmaşıklığı vardır). Genellikle sadece 3x3 veya 4x4 gibi küçük matrislerde tercih edilir.

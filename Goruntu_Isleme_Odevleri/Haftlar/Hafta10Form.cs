@@ -44,6 +44,14 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 2: Bit Düzeltme İşlemleri";
                 }
+                else if (i == 3)
+                {
+                    projeButon.Text = "Proje 3: 0. Bit (LSB) Temizleme";
+                }
+                else if (i == 4)
+                {
+                    projeButon.Text = "Proje 4: Bit Shift (Bit Kaydırma) İşlemleri";
+                }
                 else
                 {
                     projeButon.Text = "Proje " + i + " (Henüz Eklenmedi)";
@@ -93,6 +101,16 @@ namespace Goruntu_Isleme_Odevleri
                     Proje2_BitDuzlemiIslemleriForm proje2Form = new Proje2_BitDuzlemiIslemleriForm(this);
                     this.Hide();
                     proje2Form.Show();
+                    break;
+                case 3:
+                    Proje3_BitTemizlemeForm proje3Form = new Proje3_BitTemizlemeForm(this);
+                    this.Hide();
+                    proje3Form.Show();
+                    break;
+                case 4:
+                    Proje4_BitShiftForm proje4Form = new Proje4_BitShiftForm(this);
+                    this.Hide();
+                    proje4Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 9 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

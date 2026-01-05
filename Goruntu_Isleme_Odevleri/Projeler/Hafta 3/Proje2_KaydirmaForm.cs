@@ -12,7 +12,7 @@ namespace Goruntu_Isleme_Odevleri
         private PictureBox pcbCanvas;
         private Button btnYukle, btnSifirla, btnGeri;
         private Label lblBilgi;
-        private Form haftaFormu;
+        private Form haftaFormu; 
 
         private Rectangle limitRect;
         private const int LIMIT_WIDTH = 500;
@@ -22,11 +22,14 @@ namespace Goruntu_Isleme_Odevleri
         private Bitmap displayBitmap;
 
         private Point lastMousePos;
-        private bool isDragging = false;
+        private bool isDraggingHandle = false;
+        private bool isMovingImage = false;
         private ActiveHandle currentHandle = ActiveHandle.None;
 
         private int shiftX_Amount = 0;
         private int shiftY_Amount = 0;
+        private int imgOffsetX = 0;
+        private int imgOffsetY = 0;
 
         private Rectangle[] handleRects = new Rectangle[8];
         private const int HANDLE_SIZE = 12;
@@ -42,35 +45,27 @@ namespace Goruntu_Isleme_Odevleri
         public Proje2_KaydirmaForm(Form parentForm)
         {
             InitializeComponent();
-            haftaFormu = parentForm;
-            this.Text = "Proje 2: Maskelenmiş Alan ve Serbest Tutamaçlar";
-            this.Size = new Size(1000, 800); // Form geniş
+            haftaFormu = parentForm; // Ana menüyü kaydet
+            this.Text = "Proje 2: Serbest Taşıma ve Kaydırma";
+            this.Size = new Size(1000, 800);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
             SetupInterface();
+
+            this.FormClosed += new FormClosedEventHandler(ProjeForm_FormClosed);
         }
 
-        private void InitializeComponent()
-        {
-            this.Name = "Proje2_KaydirmaForm";
-            this.FormClosed += (s, e) => haftaFormu.Show();
-        }
+        private void InitializeComponent() { this.Name = "Proje2_KaydirmaForm"; }
 
         private void SetupInterface()
         {
-            pnlBottom = new Panel()
-            {
-                Dock = DockStyle.Bottom,
-                Height = 80,
-                BackColor = Color.WhiteSmoke,
-                BorderStyle = BorderStyle.FixedSingle
-            };
+            pnlBottom = new Panel() { Dock = DockStyle.Bottom, Height = 80, BackColor = Color.WhiteSmoke, BorderStyle = BorderStyle.FixedSingle };
 
             lblBilgi = new Label()
             {
-                Text = "Gri çerçevenin dışına çıkan resim GİZLENİR ama kareler GİZLENMEZ. Böylece dışarıdan tutup çekebilirsiniz.",
+                Text = "Karelerden tutup EĞİN (Shear). Resmin ortasından tutup TAŞIYIN (Move).",
                 Location = new Point(20, 10),
                 AutoSize = true,
                 Font = new Font("Arial", 10, FontStyle.Bold)
@@ -80,21 +75,19 @@ namespace Goruntu_Isleme_Odevleri
             btnYukle.Click += BtnYukle_Click;
 
             btnSifirla = new Button() { Text = "Sıfırla", Location = new Point(150, 35), Size = new Size(120, 35), BackColor = Color.LightYellow };
-            btnSifirla.Click += (s, e) => { shiftX_Amount = 0; shiftY_Amount = 0; ApplyBalancedShear(); };
+            btnSifirla.Click += (s, e) => {
+                shiftX_Amount = 0; shiftY_Amount = 0;
+                imgOffsetX = 0; imgOffsetY = 0;
+                ApplyBalancedShear();
+            };
 
             btnGeri = new Button() { Text = "Geri Dön", Location = new Point(840, 35), Size = new Size(120, 35), BackColor = Color.LightCoral };
-            btnGeri.Click += (s, e) => this.Close();
+            btnGeri.Click += new EventHandler(btnGeri_Click);
 
             pnlBottom.Controls.AddRange(new Control[] { lblBilgi, btnYukle, btnSifirla, btnGeri });
 
-            pcbCanvas = new PictureBox()
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.LightGray,
-                Cursor = Cursors.Default
-            };
+            pcbCanvas = new PictureBox() { Dock = DockStyle.Fill, BackColor = Color.LightGray, Cursor = Cursors.Default };
 
-            // Limit Alanını Hesapla 
             int midX = (this.ClientSize.Width) / 2;
             int midY = (this.ClientSize.Height - 80) / 2;
             limitRect = new Rectangle(midX - LIMIT_WIDTH / 2, midY - LIMIT_HEIGHT / 2, LIMIT_WIDTH, LIMIT_HEIGHT);
@@ -104,8 +97,8 @@ namespace Goruntu_Isleme_Odevleri
             pcbCanvas.MouseUp += PcbCanvas_MouseUp;
             pcbCanvas.Paint += PcbCanvas_Paint;
 
-            this.Controls.Add(pcbCanvas); 
-            this.Controls.Add(pnlBottom); 
+            this.Controls.Add(pcbCanvas);
+            this.Controls.Add(pnlBottom);
 
             displayBitmap = new Bitmap(1, 1);
         }
@@ -117,10 +110,8 @@ namespace Goruntu_Isleme_Odevleri
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Bitmap temp = new Bitmap(dialog.FileName);
-
                 int targetW = (int)(LIMIT_WIDTH * 0.8);
                 int targetH = (int)(LIMIT_HEIGHT * 0.8);
-
                 float scale = Math.Min((float)targetW / temp.Width, (float)targetH / temp.Height);
                 originalBitmap = new Bitmap(temp, new Size((int)(temp.Width * scale), (int)(temp.Height * scale)));
                 temp.Dispose();
@@ -132,12 +123,24 @@ namespace Goruntu_Isleme_Odevleri
                     originalBitmap = clone;
                 }
 
-                shiftX_Amount = 0;
-                shiftY_Amount = 0;
+                shiftX_Amount = 0; shiftY_Amount = 0;
+                imgOffsetX = 0; imgOffsetY = 0;
 
                 displayBitmap = new Bitmap(pcbCanvas.Width, pcbCanvas.Height, PixelFormat.Format32bppArgb);
-
                 ApplyBalancedShear();
+            }
+        }
+
+        private void btnGeri_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ProjeForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (haftaFormu != null)
+            {
+                haftaFormu.Show();
             }
         }
 
@@ -152,8 +155,8 @@ namespace Goruntu_Isleme_Odevleri
             double centerX = srcW / 2.0;
             double centerY = srcH / 2.0;
 
-            int startDrawX = limitRect.X + (limitRect.Width - srcW) / 2;
-            int startDrawY = limitRect.Y + (limitRect.Height - srcH) / 2;
+            int startDrawX = limitRect.X + (limitRect.Width - srcW) / 2 + imgOffsetX;
+            int startDrawY = limitRect.Y + (limitRect.Height - srcH) / 2 + imgOffsetY;
 
             BitmapData srcData = originalBitmap.LockBits(new Rectangle(0, 0, srcW, srcH), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             BitmapData dstData = displayBitmap.LockBits(new Rectangle(0, 0, displayBitmap.Width, displayBitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -167,8 +170,6 @@ namespace Goruntu_Isleme_Odevleri
 
             int srcStride = srcData.Stride;
             int dstStride = dstData.Stride;
-            int dstW = displayBitmap.Width;
-            int dstH = displayBitmap.Height;
 
             for (int y = 0; y < srcH; y++)
             {
@@ -201,7 +202,6 @@ namespace Goruntu_Isleme_Odevleri
             displayBitmap.UnlockBits(dstData);
 
             UpdateHandlePositions(startDrawX, startDrawY, centerX, centerY);
-
             pcbCanvas.Image = displayBitmap;
             pcbCanvas.Invalidate();
         }
@@ -244,7 +244,6 @@ namespace Goruntu_Isleme_Odevleri
             if (originalBitmap == null) return;
 
             Pen linePen = new Pen(Color.Blue, 1) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-
             e.Graphics.DrawLine(linePen, Center(handleRects[0]), Center(handleRects[2]));
             e.Graphics.DrawLine(linePen, Center(handleRects[5]), Center(handleRects[7]));
             e.Graphics.DrawLine(linePen, Center(handleRects[0]), Center(handleRects[5]));
@@ -254,7 +253,6 @@ namespace Goruntu_Isleme_Odevleri
             {
                 bool isInside = limitRect.Contains(Center(r));
                 Brush fillBrush = isInside ? Brushes.White : Brushes.OrangeRed;
-
                 e.Graphics.FillRectangle(fillBrush, r);
                 e.Graphics.DrawRectangle(Pens.Black, r);
             }
@@ -265,70 +263,86 @@ namespace Goruntu_Isleme_Odevleri
         {
             if (originalBitmap == null) return;
             currentHandle = ActiveHandle.None;
+            isDraggingHandle = false;
+            isMovingImage = false;
+
             for (int i = 0; i < 8; i++)
             {
                 Rectangle hit = handleRects[i]; hit.Inflate(5, 5);
                 if (hit.Contains(e.Location))
                 {
                     currentHandle = (ActiveHandle)(i + 1);
-                    isDragging = true;
+                    isDraggingHandle = true;
                     lastMousePos = e.Location;
-                    break;
+                    return;
                 }
             }
+
+            isMovingImage = true;
+            lastMousePos = e.Location;
+            pcbCanvas.Cursor = Cursors.SizeAll;
         }
 
         private void PcbCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!isDragging)
+            if (!isDraggingHandle && !isMovingImage)
             {
-                bool over = false;
+                bool overHandle = false;
                 if (originalBitmap != null)
                 {
                     foreach (Rectangle r in handleRects)
                     {
                         Rectangle hit = r; hit.Inflate(5, 5);
-                        if (hit.Contains(e.Location)) { over = true; break; }
+                        if (hit.Contains(e.Location)) { overHandle = true; break; }
                     }
                 }
-                pcbCanvas.Cursor = over ? Cursors.Hand : Cursors.Default;
+                pcbCanvas.Cursor = overHandle ? Cursors.Hand : Cursors.Default;
                 return;
             }
 
             int deltaX = e.X - lastMousePos.X;
             int deltaY = e.Y - lastMousePos.Y;
 
-            switch (currentHandle)
+            if (isMovingImage)
             {
-                case ActiveHandle.TopLeft:
-                case ActiveHandle.TopMiddle:
-                case ActiveHandle.TopRight:
-                case ActiveHandle.BottomLeft:
-                case ActiveHandle.BottomMiddle:
-                case ActiveHandle.BottomRight:
-                    shiftX_Amount += deltaX;
-                    break;
+                imgOffsetX += deltaX;
+                imgOffsetY += deltaY;
+                ApplyBalancedShear();
             }
-            switch (currentHandle)
+            else if (isDraggingHandle)
             {
-                case ActiveHandle.TopLeft:
-                case ActiveHandle.MiddleLeft:
-                case ActiveHandle.BottomLeft:
-                case ActiveHandle.TopRight:
-                case ActiveHandle.MiddleRight:
-                case ActiveHandle.BottomRight:
-                    shiftY_Amount += deltaY;
-                    break;
+                switch (currentHandle)
+                {
+                    case ActiveHandle.TopLeft:
+                    case ActiveHandle.TopMiddle:
+                    case ActiveHandle.TopRight:
+                    case ActiveHandle.BottomLeft:
+                    case ActiveHandle.BottomMiddle:
+                    case ActiveHandle.BottomRight:
+                        shiftX_Amount += deltaX; break;
+                }
+                switch (currentHandle)
+                {
+                    case ActiveHandle.TopLeft:
+                    case ActiveHandle.MiddleLeft:
+                    case ActiveHandle.BottomLeft:
+                    case ActiveHandle.TopRight:
+                    case ActiveHandle.MiddleRight:
+                    case ActiveHandle.BottomRight:
+                        shiftY_Amount += deltaY; break;
+                }
+                ApplyBalancedShear();
             }
 
             lastMousePos = e.Location;
-            ApplyBalancedShear();
         }
 
         private void PcbCanvas_MouseUp(object sender, MouseEventArgs e)
         {
-            isDragging = false;
+            isDraggingHandle = false;
+            isMovingImage = false;
             currentHandle = ActiveHandle.None;
+            pcbCanvas.Cursor = Cursors.Default;
         }
     }
 }

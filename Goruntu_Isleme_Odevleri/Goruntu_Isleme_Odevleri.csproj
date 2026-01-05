@@ -467,6 +467,12 @@
     <Compile Include="Projeler\Hafta 10\Proje1_MantiksalOperatorForm.Designer.cs">
       <DependentUpon>Proje1_MantiksalOperatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 9\Proje3_ResimBirlestirmeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 9\Proje3_ResimBirlestirmeForm.Designer.cs">
+      <DependentUpon>Proje3_ResimBirlestirmeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 9\Proje5_HareketTakibiForm.cs">
       <SubType>Form</SubType>
     </Compile>

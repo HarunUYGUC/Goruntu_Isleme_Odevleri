@@ -40,6 +40,10 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 1: Boş";
                 }
+                else if (i == 3)
+                {
+                    projeButon.Text = "Proje 3: İki Resmi Ağırlıklı Toplama (Blend)";
+                }
                 else if (i == 5)
                 {
                     projeButon.Text = "Proje 5: Hareket Sensörü ve Hedef Takibi";
@@ -84,6 +88,11 @@ namespace Goruntu_Isleme_Odevleri
 
             switch (projeNumarasi)
             {
+                case 3:
+                    Proje3_ResimBirlestirmeForm proje3Form = new Proje3_ResimBirlestirmeForm(this);
+                    this.Hide();
+                    proje3Form.Show();
+                    break;
                 case 5:
                     Proje5_HareketTakibiForm proje5Form = new Proje5_HareketTakibiForm(this);
                     this.Hide();

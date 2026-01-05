@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D; 
 using System.Windows.Forms;
 
 namespace Goruntu_Isleme_Odevleri
@@ -8,23 +9,17 @@ namespace Goruntu_Isleme_Odevleri
     {
         private PictureBox pcbResim;
         private Button btnYukle, btnSaatYonu, btnTersYon, btnGeri;
-        private Label lblBilgi;
+        private Label lblBilgi, lblAci;
         private Form haftaFormu;
 
         private Bitmap originalBitmap;
-        private Bitmap processedBitmap;
-
-        // Alan Paeth'in 3-Shear Döndürme Algoritması için parametreler
-        private double alpha = -0.1; // X-Shear katsayısı
-        private double beta = 0.1;  // Y-Shear katsayısı
-
-        // Shear miktarı = tan(açı / 2). 
+        private float currentAngle = 0;
 
         public Proje11_AcisizDondurmeForm(Form parentForm)
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 11: Kaydırma (Shear) ile Döndürme";
+            this.Text = "Proje 11: Yüksek Kaliteli Döndürme";
 
             pcbResim = new PictureBox()
             {
@@ -32,30 +27,39 @@ namespace Goruntu_Isleme_Odevleri
                 Size = new Size(600, 500),
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.FromArgb(50, 50, 50),
-                SizeMode = PictureBoxSizeMode.Zoom 
+                SizeMode = PictureBoxSizeMode.Zoom
             };
 
             lblBilgi = new Label()
             {
-                Text = "Resmi yükleyin ve butonlarla kaydırarak döndürün.",
+                Text = "Resim her açıda orijinal kalitesinde görünür.",
                 Location = new Point(25, 540),
                 AutoSize = true,
                 Font = new Font("Arial", 10, FontStyle.Bold)
             };
 
+            lblAci = new Label()
+            {
+                Text = "Açı: 0°",
+                Location = new Point(500, 540),
+                AutoSize = true,
+                Font = new Font("Arial", 10, FontStyle.Bold),
+                ForeColor = Color.Blue
+            };
+
             btnYukle = new Button() { Text = "Resim Yükle", Location = new Point(25, 570), Size = new Size(120, 40) };
-            btnYukle.Click += new EventHandler(btnYukle_Click);
+            btnYukle.Click += btnYukle_Click;
 
-            btnSaatYonu = new Button() { Text = "Saat Yönü (Sağa Kaydır)", Location = new Point(160, 570), Size = new Size(180, 40), BackColor = Color.LightGreen, Enabled = false };
-            btnSaatYonu.Click += (s, e) => ApplyShearRotation(true);
+            btnSaatYonu = new Button() { Text = "Saat Yönü (+10°)", Location = new Point(160, 570), Size = new Size(150, 40), BackColor = Color.LightGreen, Enabled = false };
+            btnSaatYonu.Click += (s, e) => AciyiDegistir(10);
 
-            btnTersYon = new Button() { Text = "Ters Yön (Sola Kaydır)", Location = new Point(350, 570), Size = new Size(180, 40), BackColor = Color.LightBlue, Enabled = false };
-            btnTersYon.Click += (s, e) => ApplyShearRotation(false);
+            btnTersYon = new Button() { Text = "Ters Yön (-10°)", Location = new Point(320, 570), Size = new Size(150, 40), BackColor = Color.LightBlue, Enabled = false };
+            btnTersYon.Click += (s, e) => AciyiDegistir(-10);
 
-            btnGeri = new Button() { Text = "Hafta Menüsüne Dön", Location = new Point(550, 570), Size = new Size(150, 40), BackColor = Color.LightCoral };
-            btnGeri.Click += new EventHandler(btnGeri_Click);
+            btnGeri = new Button() { Text = "Menüye Dön", Location = new Point(550, 570), Size = new Size(150, 40), BackColor = Color.LightCoral };
+            btnGeri.Click += btnGeri_Click;
 
-            this.Controls.AddRange(new Control[] { pcbResim, lblBilgi, btnYukle, btnSaatYonu, btnTersYon, btnGeri });
+            this.Controls.AddRange(new Control[] { pcbResim, lblBilgi, lblAci, btnYukle, btnSaatYonu, btnTersYon, btnGeri });
         }
 
         private void InitializeComponent()
@@ -75,90 +79,63 @@ namespace Goruntu_Isleme_Odevleri
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 originalBitmap = new Bitmap(dialog.FileName);
-                // Resmi biraz küçültelim ki işlem hızlı olsun ve dönünce taşmasın
-                int w = Math.Min(originalBitmap.Width, 400);
-                int h = (int)(w * ((float)originalBitmap.Height / originalBitmap.Width));
-                processedBitmap = new Bitmap(originalBitmap, new Size(w, h));
 
-                pcbResim.Image = processedBitmap;
+                currentAngle = 0;
+                lblAci.Text = "Açı: 0°";
+
+                pcbResim.Image = originalBitmap;
+
                 btnSaatYonu.Enabled = true;
                 btnTersYon.Enabled = true;
             }
         }
 
-        private void ApplyShearRotation(bool clockwise)
+        private void AciyiDegistir(float delta)
         {
-            if (processedBitmap == null) return;
+            if (originalBitmap == null) return;
 
-            // Sabit bir kaydırma miktarı (shear factor) belirleyelim.
-            // Pozitif shear saat yönünde, negatif shear ters yönde etki eder.
-            double shearX = clockwise ? -0.2 : 0.2; // Yatay kaydırma
-            double shearY = clockwise ? 0.2 : -0.2; // Dikey kaydırma
+            currentAngle += delta;
 
-            // 3 Adımlı Kaydırma (Paeth Algoritması benzeri)
-            // X-Shear (Yatay Kaydırma)
-            Bitmap step1 = ShearX(processedBitmap, shearX);
+            if (currentAngle >= 360) currentAngle -= 360;
+            if (currentAngle < 0) currentAngle += 360;
 
-            // Y-Shear (Dikey Kaydırma)
-            Bitmap step2 = ShearY(step1, shearY);
+            lblAci.Text = $"Açı: {currentAngle}°";
 
-            // Tekrar X-Shear (Tam bir dönüş hareketi için)
-            Bitmap step3 = ShearX(step2, shearX);
-
-            processedBitmap = step3;
-            pcbResim.Image = processedBitmap;
+            pcbResim.Image = RotateImageHighQuality(originalBitmap, currentAngle);
         }
 
-        // Yatay Kaydırma (X-Shear) 
-        private Bitmap ShearX(Bitmap bmp, double shear)
+        private Bitmap RotateImageHighQuality(Bitmap bmp, float angle)
         {
-            int width = bmp.Width + (int)(Math.Abs(shear) * bmp.Height);
-            int height = bmp.Height;
-            Bitmap result = new Bitmap(width, height);
+            float radyan = angle * (float)Math.PI / 180.0f;
+            float cos = (float)Math.Abs(Math.Cos(radyan));
+            float sin = (float)Math.Abs(Math.Sin(radyan));
 
-            for (int y = 0; y < height; y++)
+            int newWidth = (int)(bmp.Width * cos + bmp.Height * sin);
+            int newHeight = (int)(bmp.Width * sin + bmp.Height * cos);
+
+            Bitmap rotatedBmp = new Bitmap(newWidth, newHeight);
+
+            rotatedBmp.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
+
+            using (Graphics g = Graphics.FromImage(rotatedBmp))
             {
-                // Her satır için kaydırma miktarı (skew) hesapla
-                // shear pozitifse: üst satırlar az, alt satırlar çok kayar.
-                // shear negatifse: tam tersi.
-                double skew = shear * (y - height / 2);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic; 
+                g.SmoothingMode = SmoothingMode.HighQuality; 
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality; 
+                g.CompositingQuality = CompositingQuality.HighQuality;
 
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    int newX = x + (int)skew + (width - bmp.Width) / 2; // Merkeze hizala
+                g.Clear(Color.Transparent);
 
-                    if (newX >= 0 && newX < width)
-                    {
-                        result.SetPixel(newX, y, bmp.GetPixel(x, y));
-                    }
-                }
+                g.TranslateTransform(newWidth / 2.0f, newHeight / 2.0f);
+
+                g.RotateTransform(angle);
+
+                g.TranslateTransform(-bmp.Width / 2.0f, -bmp.Height / 2.0f);
+
+                g.DrawImage(bmp, new Point(0, 0));
             }
-            return result;
-        }
 
-        // Dikey Kaydırma (Y-Shear)
-        private Bitmap ShearY(Bitmap bmp, double shear)
-        {
-            int width = bmp.Width;
-            int height = bmp.Height + (int)(Math.Abs(shear) * bmp.Width);
-            Bitmap result = new Bitmap(width, height);
-
-            for (int x = 0; x < width; x++)
-            {
-                // Her sütun için kaydırma miktarı
-                double skew = shear * (x - width / 2);
-
-                for (int y = 0; y < bmp.Height; y++)
-                {
-                    int newY = y + (int)skew + (height - bmp.Height) / 2; // Merkeze hizala
-
-                    if (newY >= 0 && newY < height)
-                    {
-                        result.SetPixel(x, newY, bmp.GetPixel(x, y));
-                    }
-                }
-            }
-            return result;
+            return rotatedBmp;
         }
 
         private void btnGeri_Click(object sender, EventArgs e)

@@ -15,10 +15,10 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             anaMenuFormu = anaMenu;
-            this.Text = "Hafta 9 Projeleri";
+            this.Text = "Hafta 10 Projeleri";
 
             lblBaslik = new Label();
-            lblBaslik.Text = "Hafta 9 Projeleri";
+            lblBaslik.Text = "Hafta 10 Projeleri";
             lblBaslik.Font = new Font("Arial", 14, FontStyle.Bold);
             lblBaslik.AutoSize = true;
             lblBaslik.Location = new Point(130, 20);
@@ -113,7 +113,7 @@ namespace Goruntu_Isleme_Odevleri
                     proje4Form.Show();
                     break;
                 default:
-                    MessageBox.Show($"Hafta 9 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Hafta 10 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
         }

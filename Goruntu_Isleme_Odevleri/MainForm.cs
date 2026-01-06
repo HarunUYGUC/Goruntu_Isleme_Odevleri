@@ -8,12 +8,14 @@ namespace Goruntu_Isleme_Odevleri
     {
         private Panel haftaPaneli;
         private Label lblBaslik;
+        private Label lblHazirlayanlar;
 
         public MainForm()
         {
             InitializeComponent();
 
             this.Text = "Görüntü İşleme Projeleri, Ana Menü";
+            this.Size = new Size(450, 600);
 
             lblBaslik = new Label();
             lblBaslik.Text = "Lütfen Bir Hafta Seçiniz";
@@ -22,9 +24,21 @@ namespace Goruntu_Isleme_Odevleri
             lblBaslik.Location = new Point(95, 20);
             this.Controls.Add(lblBaslik);
 
+            lblHazirlayanlar = new Label();
+            lblHazirlayanlar.Text = "Projeyi Hazırlayanlar:\n" +
+                                    "Harun Uyguç - 210401043\n" +
+                                    "Nuri Kaan Özcan - 220401069\n" +
+                                    "Ali Emirhan Ayhan - 220401011";
+            lblHazirlayanlar.Font = new Font("Arial", 10, FontStyle.Italic); 
+            lblHazirlayanlar.AutoSize = true;
+            lblHazirlayanlar.TextAlign = ContentAlignment.MiddleCenter; 
+            lblHazirlayanlar.Location = new Point(110, 50);
+            lblHazirlayanlar.ForeColor = Color.DarkBlue;
+            this.Controls.Add(lblHazirlayanlar);
+
             haftaPaneli = new Panel();
-            haftaPaneli.Location = new Point(25, 60);
-            haftaPaneli.Size = new Size(380, 380);
+            haftaPaneli.Location = new Point(25, 130);
+            haftaPaneli.Size = new Size(380, 400);
             haftaPaneli.AutoScroll = true;
             haftaPaneli.BorderStyle = BorderStyle.Fixed3D;
             this.Controls.Add(haftaPaneli);
@@ -53,7 +67,6 @@ namespace Goruntu_Isleme_Odevleri
         private void InitializeComponent()
         {
             this.Name = "MainForm";
-            this.Size = new Size(450, 500);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -123,4 +136,3 @@ namespace Goruntu_Isleme_Odevleri
         }
     }
 }
-

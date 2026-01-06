@@ -6,159 +6,148 @@ namespace Goruntu_Isleme_Odevleri
 {
     public partial class Proje1_MantiksalOperatorForm : Form
     {
-        // UI Elemanları (Template'e uygun isimlendirme)
-        private PictureBox pcbSensorA, pcbSensorB, pcbResult;
-        private Label lblSensorA, lblSensorB, lblResult;
-        private Button btnAND, btnOR, btnXOR, btnGeri;
-        private Label lblInfo; // Bilgilendirme etiketi
-
-        // Mantıksal işlem için kaynak resimler
-        private Bitmap bitmapA;
-        private Bitmap bitmapB;
-
+        private PictureBox pcbResim1, pcbResim2, pcbSonuc;
+        private Button btnYukle1, btnYukle2, btnIsle, btnGeri;
+        private ComboBox cmbIslem;
+        private Label lblR1, lblR2, lblSonuc, lblIslem, lblEsik;
+        private TrackBar tbEsik;
         private Form haftaFormu;
+
+        private Bitmap img1, img2;
 
         public Proje1_MantiksalOperatorForm(Form parentForm)
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 1: Mantıksal Operatörler (Sensör Senaryosu)";
-
-            // 1. Arayüzü Kur (Template Yapısı)
+            this.Text = "Ödev 1: Mantıksal Operatörler ile Hareket Algılama";
+            this.Size = new Size(1100, 600);
             SetupUI();
-
-            // 2. Kaynak Resimleri Oluştur (Daire ve Kare)
-            GenerateSourceImages();
-
-            this.FormClosed += new FormClosedEventHandler(ProjeForm_FormClosed);
         }
 
-        private void InitializeComponent()
-        {
-            this.Name = "Proje1_MantiksalOperatorForm";
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-        }
-
-        private void ProjeForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            haftaFormu.Show();
-        }
-
-        // --- ARAYÜZ OLUŞTURMA (Template Mantığı) ---
         private void SetupUI()
         {
             int margin = 20;
-            int pcbSize = 250; // Resim kutusu boyutu
+            int pcbSize = 300;
 
-            // Form Boyutunu dinamik ayarla (3 resim yan yana)
-            this.Size = new Size((margin * 4) + (pcbSize * 3) + 20, 600);
+            lblR1 = new Label() { Text = "Görüntü 1 (Önceki An)", Location = new Point(margin, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
+            pcbResim1 = CreatePictureBox(margin, 50, pcbSize);
+            btnYukle1 = new Button() { Text = "Yükle 1", Location = new Point(margin, 360), Size = new Size(100, 30) };
+            btnYukle1.Click += (s, e) => LoadImage(1);
 
-            // --- 1. SENSÖR A (SOL) ---
-            lblSensorA = new Label() { Text = "Sensör A (Hareket)", Location = new Point(margin, margin), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
-            pcbSensorA = new PictureBox() { Location = new Point(margin, margin + 25), Size = new Size(pcbSize, pcbSize), BorderStyle = BorderStyle.FixedSingle, SizeMode = PictureBoxSizeMode.StretchImage };
+            lblR2 = new Label() { Text = "Görüntü 2 (Şu Anki An)", Location = new Point(margin + 320, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
+            pcbResim2 = CreatePictureBox(margin + 320, 50, pcbSize);
+            btnYukle2 = new Button() { Text = "Yükle 2", Location = new Point(margin + 320, 360), Size = new Size(100, 30) };
+            btnYukle2.Click += (s, e) => LoadImage(2);
 
-            // --- 2. SENSÖR B (ORTA) ---
-            lblSensorB = new Label() { Text = "Sensör B (Isı)", Location = new Point(margin + pcbSize + margin, margin), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
-            pcbSensorB = new PictureBox() { Location = new Point(margin + pcbSize + margin, margin + 25), Size = new Size(pcbSize, pcbSize), BorderStyle = BorderStyle.FixedSingle, SizeMode = PictureBoxSizeMode.StretchImage };
+            lblSonuc = new Label() { Text = "Sonuç (Hareket)", Location = new Point(margin + 640, 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold), ForeColor = Color.Red };
+            pcbSonuc = CreatePictureBox(margin + 640, 50, pcbSize);
 
-            // --- 3. SONUÇ (SAĞ) ---
-            lblResult = new Label() { Text = "Sonuç (Karar)", Location = new Point(margin + (pcbSize + margin) * 2, margin), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
-            pcbResult = new PictureBox() { Location = new Point(margin + (pcbSize + margin) * 2, margin + 25), Size = new Size(pcbSize, pcbSize), BorderStyle = BorderStyle.FixedSingle, SizeMode = PictureBoxSizeMode.StretchImage };
+            int ctrlY = 420;
 
-            // --- KONTROLLER (ALT KISIM) ---
-            int ctrlY = margin + pcbSize + 50;
-            int btnWidth = 120;
-            int btnHeight = 50;
+            lblEsik = new Label() { Text = "Binary Eşik Değeri (Siyah/Beyaz Ayrımı): 128", Location = new Point(margin, ctrlY), AutoSize = true, Width = 300 };
+            tbEsik = new TrackBar() { Location = new Point(margin, ctrlY + 25), Width = 300, Minimum = 0, Maximum = 255, Value = 128 };
+            tbEsik.Scroll += (s, e) => lblEsik.Text = $"Binary Eşik Değeri: {tbEsik.Value}";
 
-            // Butonları ortalamak için başlangıç X hesabı
-            int totalWidth = this.ClientSize.Width;
-            int startX = (totalWidth - (btnWidth * 4 + margin * 3)) / 2;
+            lblIslem = new Label() { Text = "Operatör Seçimi:", Location = new Point(350, ctrlY + 10), AutoSize = true };
+            cmbIslem = new ComboBox() { Location = new Point(460, ctrlY + 8), Width = 150, DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbIslem.Items.AddRange(new object[] { "XOR (Fark/Hareket)", "AND (Kesişim)", "OR (Birleşim)", "NAND", "NOR" });
+            cmbIslem.SelectedIndex = 0; // Varsayılan XOR (En iyi hareket algılayıcı)
 
-            btnAND = new Button() { Text = "VE (AND)\n(Kesişim)", Location = new Point(startX, ctrlY), Size = new Size(btnWidth, btnHeight), BackColor = Color.LightBlue };
-            btnAND.Click += (s, e) => ApplyLogicOperation("AND");
+            btnIsle = new Button() { Text = "MANTIKSAL İŞLEMİ UYGULA", Location = new Point(640, 420), Size = new Size(300, 50), BackColor = Color.LightGreen, Font = new Font("Arial", 10, FontStyle.Bold) };
+            btnIsle.Click += BtnIsle_Click;
 
-            btnOR = new Button() { Text = "VEYA (OR)\n(Birleşim)", Location = new Point(startX + btnWidth + margin, ctrlY), Size = new Size(btnWidth, btnHeight), BackColor = Color.LightGreen };
-            btnOR.Click += (s, e) => ApplyLogicOperation("OR");
+            btnGeri = new Button() { Text = "Menüye Dön", Location = new Point(950, 500), Size = new Size(120, 40), BackColor = Color.LightCoral };
+            btnGeri.Click += (s, e) => this.Close();
 
-            btnXOR = new Button() { Text = "YA DA (XOR)\n(Fark)", Location = new Point(startX + (btnWidth + margin) * 2, ctrlY), Size = new Size(btnWidth, btnHeight), BackColor = Color.LightYellow };
-            btnXOR.Click += (s, e) => ApplyLogicOperation("XOR");
+            this.Controls.AddRange(new Control[] {
+                lblR1, pcbResim1, btnYukle1,
+                lblR2, pcbResim2, btnYukle2,
+                lblSonuc, pcbSonuc,
+                lblEsik, tbEsik, lblIslem, cmbIslem, btnIsle, btnGeri
+            });
 
-            btnGeri = new Button() { Text = "Geri Dön", Location = new Point(startX + (btnWidth + margin) * 3, ctrlY), Size = new Size(btnWidth, btnHeight), BackColor = Color.LightCoral };
-            btnGeri.Click += BtnGeri_Click;
-
-            lblInfo = new Label() { Text = "Lütfen bir mantıksal işlem seçin...", Location = new Point(margin, ctrlY + btnHeight + 20), Size = new Size(800, 30), Font = new Font("Arial", 11, FontStyle.Bold), ForeColor = Color.Blue, TextAlign = ContentAlignment.MiddleCenter };
-
-            this.Controls.AddRange(new Control[] { lblSensorA, pcbSensorA, lblSensorB, pcbSensorB, lblResult, pcbResult, btnAND, btnOR, btnXOR, btnGeri, lblInfo });
+            this.FormClosed += (s, e) => haftaFormu.Show();
         }
 
-        // --- MANTIK VE İŞLEVSELLİK ---
-
-        private void GenerateSourceImages()
+        private PictureBox CreatePictureBox(int x, int y, int size)
         {
-            int w = 200, h = 200;
-            bitmapA = new Bitmap(w, h);
-            bitmapB = new Bitmap(w, h);
-
-            // A Resmi: Daire
-            using (Graphics g = Graphics.FromImage(bitmapA))
+            return new PictureBox()
             {
-                g.Clear(Color.Black);
-                g.FillEllipse(Brushes.White, 20, 20, 160, 160);
-            }
-
-            // B Resmi: Artı/Kare şekli
-            using (Graphics g = Graphics.FromImage(bitmapB))
-            {
-                g.Clear(Color.Black);
-                g.FillRectangle(Brushes.White, 80, 0, 40, 200); // Dikey
-                g.FillRectangle(Brushes.White, 0, 80, 200, 40); // Yatay
-            }
-
-            pcbSensorA.Image = bitmapA;
-            pcbSensorB.Image = bitmapB;
+                Location = new Point(x, y),
+                Size = new Size(size, size),
+                BorderStyle = BorderStyle.FixedSingle,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BackColor = Color.WhiteSmoke
+            };
         }
 
-        private void ApplyLogicOperation(string opType)
-        {
-            int w = bitmapA.Width;
-            int h = bitmapA.Height;
-            Bitmap resultBmp = new Bitmap(w, h);
+        private void InitializeComponent() { this.Name = "Proje1_MantiksalOperatorlerForm"; }
 
-            for (int y = 0; y < h; y++)
+        private void LoadImage(int imgIndex)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                for (int x = 0; x < w; x++)
+                Bitmap bmp = new Bitmap(ofd.FileName);
+                Bitmap resized = new Bitmap(bmp, new Size(300, 300));
+
+                if (imgIndex == 1) { img1 = resized; pcbResim1.Image = img1; }
+                else { img2 = resized; pcbResim2.Image = img2; }
+            }
+        }
+
+        private void BtnIsle_Click(object sender, EventArgs e)
+        {
+            if (img1 == null || img2 == null)
+            {
+                MessageBox.Show("Lütfen her iki resmi de yükleyin.");
+                return;
+            }
+
+            this.Cursor = Cursors.WaitCursor;
+
+            string op = cmbIslem.SelectedItem.ToString();
+            int threshold = tbEsik.Value;
+
+            Bitmap result = new Bitmap(img1.Width, img1.Height);
+
+            for (int y = 0; y < img1.Height; y++)
+            {
+                for (int x = 0; x < img1.Width; x++)
                 {
-                    // Pikselleri al
-                    Color cA = bitmapA.GetPixel(x, y);
-                    Color cB = bitmapB.GetPixel(x, y);
+                    // 1. Pikselleri al ve Griye çevir
+                    Color c1 = img1.GetPixel(x, y);
+                    Color c2 = img2.GetPixel(x, y);
+                    int gray1 = (int)(c1.R * 0.3 + c1.G * 0.59 + c1.B * 0.11);
+                    int gray2 = (int)(c2.R * 0.3 + c2.G * 0.59 + c2.B * 0.11);
 
-                    // Thresholding (Siyah/Beyaz Ayrımı)
-                    // R değeri 128'den büyükse True (Beyaz), değilse False (Siyah)
-                    bool valA = cA.R > 128;
-                    bool valB = cB.R > 128;
-                    bool resVal = false;
+                    // 2. Binary (0 veya 1) yap. 
+                    // Binary mantık: Değer > Eşik ise 1 (Beyaz), değilse 0 (Siyah).
 
-                    switch (opType)
+                    bool bit1 = gray1 > threshold; // True = Beyaz(1), False = Siyah(0)
+                    bool bit2 = gray2 > threshold;
+
+                    bool resultBit = false;
+
+                    // 3. Mantıksal Operatör Uygula
+                    switch (op)
                     {
-                        case "AND": resVal = valA && valB; break;
-                        case "OR": resVal = valA || valB; break;
-                        case "XOR": resVal = valA ^ valB; break;
+                        case "AND (Kesişim)": resultBit = bit1 & bit2; break;
+                        case "OR (Birleşim)": resultBit = bit1 | bit2; break;
+                        case "XOR (Fark/Hareket)": resultBit = bit1 ^ bit2; break; // Farklıysa 1 olur
+                        case "NAND": resultBit = !(bit1 & bit2); break;
+                        case "NOR": resultBit = !(bit1 | bit2); break;
                     }
 
-                    // Sonucu renge çevir
-                    resultBmp.SetPixel(x, y, resVal ? Color.White : Color.Black);
+                    // 4. Sonucu Pixel Olarak Ata
+                    // True ise Beyaz (255), False ise Siyah (0)
+                    Color finalColor = resultBit ? Color.White : Color.Black;
+                    result.SetPixel(x, y, finalColor);
                 }
             }
 
-            pcbResult.Image = resultBmp;
-            lblInfo.Text = $"İşlem Tamamlandı: {opType}";
-        }
-
-        private void BtnGeri_Click(object sender, EventArgs e)
-        {
-            this.Close();
+            pcbSonuc.Image = result;
+            this.Cursor = Cursors.Default;
         }
     }
 }

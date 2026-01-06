@@ -9,7 +9,7 @@ namespace Goruntu_Isleme_Odevleri
     {
         private PictureBox pcbResim;
         private Button btnDuzCizgiOlustur, btnResimYukle, btnHesapla, btnGeri;
-        private Label lblSobel, lblCompass, lblInfo;
+        private Label lblSobel, lblCompass;
         private TextBox txtSobelAci, txtCompassAci;
         private Form haftaFormu;
         private Bitmap originalBitmap;
@@ -47,12 +47,12 @@ namespace Goruntu_Isleme_Odevleri
             lblCompass = new Label() { Text = "Compass (8 Matris) Açı:", Location = new Point(ctrlX, margin + 240), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
             txtCompassAci = new TextBox() { Location = new Point(ctrlX, margin + 260), Size = new Size(200, 25), ReadOnly = true };
 
-            lblInfo = new Label() { Text = "Not: Sobel matematiksel (Atan2) hesap yaptığı için ondalıklı hassas sonuç verir. Compass 8 yönlü olduğu için genelde 45 derecelik adımlarla sonuç verir.", Location = new Point(ctrlX, margin + 300), Size = new Size(200, 150), ForeColor = Color.Gray };
+            // lblInfo kaldırıldı.
 
             btnGeri = new Button() { Text = "Geri Dön", Location = new Point(ctrlX, 500), Size = new Size(200, 40), BackColor = Color.LightCoral };
             btnGeri.Click += (s, e) => this.Close();
 
-            this.Controls.AddRange(new Control[] { pcbResim, btnDuzCizgiOlustur, btnResimYukle, btnHesapla, lblSobel, txtSobelAci, lblCompass, txtCompassAci, lblInfo, btnGeri });
+            this.Controls.AddRange(new Control[] { pcbResim, btnDuzCizgiOlustur, btnResimYukle, btnHesapla, lblSobel, txtSobelAci, lblCompass, txtCompassAci, btnGeri });
 
             this.FormClosed += (s, e) => haftaFormu.Show();
         }
@@ -185,7 +185,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             // Yönler ve Açılar (0 - 315)
             List<int[,]> masks = new List<int[,]>();
-            List<double> angles = new List<double>(); 
+            List<double> angles = new List<double>();
 
             // Robinson Maskeleri (veya Kirsch)
             // Doğu (0)

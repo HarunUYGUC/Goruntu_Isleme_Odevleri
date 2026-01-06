@@ -44,9 +44,25 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 3: İki Resmi Ağırlıklı Toplama (Blend)";
                 }
+                else if (i == 4)
+                {
+                    projeButon.Text = "Proje 4: Değişken Işıkta Nesne Ayırma (Arka Plan Çıkarma)";
+                }
                 else if (i == 5)
                 {
                     projeButon.Text = "Proje 5: Hareket Sensörü ve Hedef Takibi";
+                }
+                else if (i == 7)
+                {
+                    projeButon.Text = "Proje 7: Otomatik Hedef Takibi ve Eksen Kontrolü";
+                }
+                else if (i == 8)
+                {
+                    projeButon.Text = "Proje 8: Gelişmiş Filigran";
+                }
+                else if (i == 9)
+                {
+                    projeButon.Text = "Proje 9: Gölge Giderme ve Metin Netleştirme";
                 }
                 else
                 {
@@ -93,10 +109,30 @@ namespace Goruntu_Isleme_Odevleri
                     this.Hide();
                     proje3Form.Show();
                     break;
+                case 4:
+                    Proje4_NesneAyirmaForm proje4Form = new Proje4_NesneAyirmaForm(this);
+                    this.Hide();
+                    proje4Form.Show();
+                    break;
                 case 5:
                     Proje5_HareketTakibiForm proje5Form = new Proje5_HareketTakibiForm(this);
                     this.Hide();
                     proje5Form.Show();
+                    break;
+                case 7:
+                    Proje7_EksenTakibiForm proje7Form = new Proje7_EksenTakibiForm(this);
+                    this.Hide();
+                    proje7Form.Show();
+                    break;
+                case 8:
+                    Proje8_FiligranForm proje8Form = new Proje8_FiligranForm(this);
+                    this.Hide();
+                    proje8Form.Show();
+                    break;
+                case 9:
+                    Proje9_MetinNetlestirmeForm proje9Form = new Proje9_MetinNetlestirmeForm(this);
+                    this.Hide();
+                    proje9Form.Show();
                     break;
                 default:
                     MessageBox.Show($"Hafta 9 - Proje {projeNumarasi} henüz eklenmedi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);

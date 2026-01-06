@@ -407,6 +407,12 @@
     <Compile Include="Projeler\Hafta 6\Proje1_NetlestirmeForm.Designer.cs">
       <DependentUpon>Proje1_NetlestirmeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje3_FiltrelemeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projeler\Hafta 7\Proje3_FiltrelemeForm.Designer.cs">
+      <DependentUpon>Proje3_FiltrelemeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projeler\Hafta 7\Proje6_KirschForm.cs">
       <SubType>Form</SubType>
     </Compile>

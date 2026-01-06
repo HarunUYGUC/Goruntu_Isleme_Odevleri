@@ -44,6 +44,10 @@ namespace Goruntu_Isleme_Odevleri
                 {
                     projeButon.Text = "Proje 2: Kenar Renklendirme (Sobel & Compass)";
                 }
+                else if (i == 3)
+                {
+                    projeButon.Text = "Proje 3: Gelişmiş Filtreleme ve Kenar Bulma";
+                }
                 else if (i == 4)
                 {
                     projeButon.Text = "Proje 4: Compass Algoritması (3 Farklı Matris)";
@@ -106,6 +110,11 @@ namespace Goruntu_Isleme_Odevleri
                     Proje2_KenarRenklendirmeForm proje2Form = new Proje2_KenarRenklendirmeForm(this);
                     this.Hide();
                     proje2Form.Show();
+                    break;
+                case 3:
+                    Proje3_FiltrelemeForm proje3Form = new Proje3_FiltrelemeForm(this);
+                    this.Hide();
+                    proje3Form.Show();
                     break;
                 case 4:
                     Proje4_FarkliMatrislerForm proje4Form = new Proje4_FarkliMatrislerForm(this);

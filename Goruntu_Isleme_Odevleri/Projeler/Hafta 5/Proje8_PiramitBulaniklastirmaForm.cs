@@ -19,7 +19,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 8: Piramit Bulanıklaştırma";
+            this.Text = "Proje 8: Piramit (Lineer) Bulanıklaştırma";
 
             SetupUI();
         }

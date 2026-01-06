@@ -50,11 +50,11 @@ namespace Goruntu_Isleme_Odevleri
                 }
                 else if (i == 4)
                 {
-                    projeButon.Text = "Proje 4: Özel Bulanıklaştırma Algoritması";
+                    projeButon.Text = "Proje 4: Bölgesel Netleştirme ve Bulanıklaştırma";
                 }
                 else if (i == 5)
                 {
-                    projeButon.Text = "Proje 5: Mouse İle Bölgesel Netleştirme (Focus Tool)";
+                    projeButon.Text = "Proje 5: Mouse İle Bölgesel Netleştirme";
                 }
                 else if (i == 6)
                 {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Linq; // Median filtresi için gerekli
+using System.Linq;
 
 namespace Goruntu_Isleme_Odevleri
 {
@@ -25,37 +27,30 @@ namespace Goruntu_Isleme_Odevleri
             int pcbSize = 350;
             int margin = 25;
 
-            // --- Üst Kısım: Resim Kutuları ---
             lblOriginal = new Label() { Text = "Orijinal Resim", Location = new Point(margin + 100, margin - 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
             pcbOriginal = new PictureBox() { Location = new Point(margin, margin), Size = new Size(pcbSize, pcbSize), BorderStyle = BorderStyle.FixedSingle, BackColor = Color.LightGray, SizeMode = PictureBoxSizeMode.Zoom };
 
             lblResult = new Label() { Text = "Filtrelenmiş Resim", Location = new Point(margin * 2 + pcbSize + 100, margin - 20), AutoSize = true, Font = new Font("Arial", 10, FontStyle.Bold) };
             pcbResult = new PictureBox() { Location = new Point(margin * 2 + pcbSize, margin), Size = new Size(pcbSize, pcbSize), BorderStyle = BorderStyle.FixedSingle, BackColor = Color.LightGray, SizeMode = PictureBoxSizeMode.Zoom };
 
-            // --- Alt Kısım: Kontroller ---
             int controlsY = margin + pcbSize + 20;
 
-            // 1. Resim Yükle Butonu (En Sol)
             btnYukle = new Button() { Text = "Resim Yükle", Location = new Point(margin, controlsY), Size = new Size(120, 40) };
             btnYukle.Click += new EventHandler(btnYukle_Click);
 
-            // 2. Filtre Tipi Seçimi
             lblFiltre = new Label() { Text = "Filtre Tipi:", Location = new Point(160, controlsY + 10), AutoSize = true };
             cmbFiltreTipi = new ComboBox() { Location = new Point(230, controlsY + 8), DropDownStyle = ComboBoxStyle.DropDownList, Width = 120 };
             cmbFiltreTipi.Items.AddRange(new object[] { "Mean (Ortalama)", "Median (Ortanca)", "Gauss (Bulanıklaştırma)" });
             cmbFiltreTipi.SelectedIndex = 0;
 
-            // 3. Matris Boyutu Seçimi
             lblMatris = new Label() { Text = "Matris Boyutu:", Location = new Point(370, controlsY + 10), AutoSize = true };
             cmbMatrisBoyutu = new ComboBox() { Location = new Point(460, controlsY + 8), DropDownStyle = ComboBoxStyle.DropDownList, Width = 80 };
             cmbMatrisBoyutu.Items.AddRange(new object[] { "3x3", "5x5", "7x7", "9x9" });
             cmbMatrisBoyutu.SelectedIndex = 0;
 
-            // 4. Uygula Butonu (Ortada)
             btnUygula = new Button() { Text = "Uygula", Location = new Point(600, controlsY), Size = new Size(120, 40), BackColor = Color.LightGreen, Enabled = false };
             btnUygula.Click += new EventHandler(btnUygula_Click);
 
-            // 5. Geri Butonu (En Sağda - Çakışma Düzeltildi)
             btnGeri = new Button() { Text = "Geri", Location = new Point(730, controlsY), Size = new Size(120, 40), BackColor = Color.LightCoral };
             btnGeri.Click += new EventHandler(btnGeri_Click);
 
@@ -65,7 +60,7 @@ namespace Goruntu_Isleme_Odevleri
         private void InitializeComponent()
         {
             this.Name = "Proje1_FiltrelemeKarsilastirmaForm";
-            this.Size = new Size(880, 500); // Genişlik artırıldı
+            this.Size = new Size(880, 500);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -78,7 +73,15 @@ namespace Goruntu_Isleme_Odevleri
             dialog.Filter = "Resim Dosyaları|*.jpg;*.jpeg;*.png;*.bmp";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                originalBitmap = new Bitmap(dialog.FileName);
+                // İşlem kolaylığı ve hız için resmi 24bppRgb formatına çeviriyoruz.
+                // Bu formatta her piksel 3 byte (B, G, R) yer kaplar.
+                Bitmap temp = new Bitmap(dialog.FileName);
+                originalBitmap = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
+                using (Graphics g = Graphics.FromImage(originalBitmap))
+                {
+                    g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
+                }
+
                 pcbOriginal.Image = originalBitmap;
                 pcbResult.Image = null;
                 btnUygula.Enabled = true;
@@ -98,154 +101,19 @@ namespace Goruntu_Isleme_Odevleri
 
             if (filterType.Contains("Mean"))
             {
-                resultBitmap = ApplyMeanFilter(originalBitmap, kernelSize);
+                resultBitmap = ApplyMeanFilterFast(originalBitmap, kernelSize);
             }
             else if (filterType.Contains("Median"))
             {
-                resultBitmap = ApplyMedianFilter(originalBitmap, kernelSize);
+                resultBitmap = ApplyMedianFilterFast(originalBitmap, kernelSize);
             }
             else if (filterType.Contains("Gauss"))
             {
-                resultBitmap = ApplyGaussianFilter(originalBitmap, kernelSize);
+                resultBitmap = ApplyGaussianFilterFast(originalBitmap, kernelSize);
             }
 
             pcbResult.Image = resultBitmap;
             this.Cursor = Cursors.Default;
-        }
-
-        // --- Filtreleme Fonksiyonları (Aynı Kaldı) ---
-
-        private Bitmap ApplyMeanFilter(Bitmap srcImage, int kernelSize)
-        {
-            Bitmap dstImage = new Bitmap(srcImage.Width, srcImage.Height);
-            int radius = kernelSize / 2;
-
-            for (int y = 0; y < srcImage.Height; y++)
-            {
-                for (int x = 0; x < srcImage.Width; x++)
-                {
-                    int rSum = 0, gSum = 0, bSum = 0, count = 0;
-
-                    for (int ky = -radius; ky <= radius; ky++)
-                    {
-                        for (int kx = -radius; kx <= radius; kx++)
-                        {
-                            int pX = x + kx;
-                            int pY = y + ky;
-
-                            if (pX >= 0 && pX < srcImage.Width && pY >= 0 && pY < srcImage.Height)
-                            {
-                                Color p = srcImage.GetPixel(pX, pY);
-                                rSum += p.R; gSum += p.G; bSum += p.B;
-                                count++;
-                            }
-                        }
-                    }
-                    dstImage.SetPixel(x, y, Color.FromArgb(rSum / count, gSum / count, bSum / count));
-                }
-            }
-            return dstImage;
-        }
-
-        private Bitmap ApplyMedianFilter(Bitmap srcImage, int kernelSize)
-        {
-            Bitmap dstImage = new Bitmap(srcImage.Width, srcImage.Height);
-            int radius = kernelSize / 2;
-
-            for (int y = 0; y < srcImage.Height; y++)
-            {
-                for (int x = 0; x < srcImage.Width; x++)
-                {
-                    List<int> rValues = new List<int>();
-                    List<int> gValues = new List<int>();
-                    List<int> bValues = new List<int>();
-
-                    for (int ky = -radius; ky <= radius; ky++)
-                    {
-                        for (int kx = -radius; kx <= radius; kx++)
-                        {
-                            int pX = x + kx;
-                            int pY = y + ky;
-
-                            if (pX >= 0 && pX < srcImage.Width && pY >= 0 && pY < srcImage.Height)
-                            {
-                                Color p = srcImage.GetPixel(pX, pY);
-                                rValues.Add(p.R); gValues.Add(p.G); bValues.Add(p.B);
-                            }
-                        }
-                    }
-
-                    rValues.Sort(); gValues.Sort(); bValues.Sort();
-                    int mid = rValues.Count / 2;
-                    dstImage.SetPixel(x, y, Color.FromArgb(rValues[mid], gValues[mid], bValues[mid]));
-                }
-            }
-            return dstImage;
-        }
-
-        private Bitmap ApplyGaussianFilter(Bitmap srcImage, int kernelSize)
-        {
-            double[,] kernel = CalculateGaussianKernel(kernelSize, kernelSize / 3.0);
-            return ApplyConvolution(srcImage, kernel);
-        }
-
-        private double[,] CalculateGaussianKernel(int size, double sigma)
-        {
-            double[,] kernel = new double[size, size];
-            double sum = 0;
-            int radius = size / 2;
-
-            for (int y = -radius; y <= radius; y++)
-            {
-                for (int x = -radius; x <= radius; x++)
-                {
-                    double value = (1.0 / (2.0 * Math.PI * sigma * sigma)) * Math.Exp(-(x * x + y * y) / (2.0 * sigma * sigma));
-                    kernel[y + radius, x + radius] = value;
-                    sum += value;
-                }
-            }
-
-            for (int y = 0; y < size; y++)
-                for (int x = 0; x < size; x++)
-                    kernel[y, x] /= sum;
-
-            return kernel;
-        }
-
-        private Bitmap ApplyConvolution(Bitmap srcImage, double[,] kernel)
-        {
-            Bitmap dstImage = new Bitmap(srcImage.Width, srcImage.Height);
-            int kernelSize = kernel.GetLength(0);
-            int radius = kernelSize / 2;
-
-            for (int y = 0; y < srcImage.Height; y++)
-            {
-                for (int x = 0; x < srcImage.Width; x++)
-                {
-                    double rSum = 0, gSum = 0, bSum = 0;
-
-                    for (int ky = -radius; ky <= radius; ky++)
-                    {
-                        for (int kx = -radius; kx <= radius; kx++)
-                        {
-                            int pX = Math.Max(0, Math.Min(srcImage.Width - 1, x + kx));
-                            int pY = Math.Max(0, Math.Min(srcImage.Height - 1, y + ky));
-
-                            Color p = srcImage.GetPixel(pX, pY);
-                            double weight = kernel[ky + radius, kx + radius];
-
-                            rSum += p.R * weight;
-                            gSum += p.G * weight;
-                            bSum += p.B * weight;
-                        }
-                    }
-                    int r = Math.Max(0, Math.Min(255, (int)rSum));
-                    int g = Math.Max(0, Math.Min(255, (int)gSum));
-                    int b = Math.Max(0, Math.Min(255, (int)bSum));
-                    dstImage.SetPixel(x, y, Color.FromArgb(r, g, b));
-                }
-            }
-            return dstImage;
         }
 
         private void btnGeri_Click(object sender, EventArgs e)
@@ -256,6 +124,245 @@ namespace Goruntu_Isleme_Odevleri
         private void ProjeForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             haftaFormu.Show();
+        }
+
+        // 1. MEAN (ORTALAMA) FİLTRESİ
+        private Bitmap ApplyMeanFilterFast(Bitmap srcImage, int kernelSize)
+        {
+            int w = srcImage.Width;
+            int h = srcImage.Height;
+            int radius = kernelSize / 2;
+
+            Bitmap dstImage = new Bitmap(w, h, PixelFormat.Format24bppRgb);
+
+            // Verileri Kitle
+            BitmapData srcData = srcImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            BitmapData dstData = dstImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+            // Bayt dizilerine kopyala
+            int bytes = srcData.Stride * h;
+            byte[] buffer = new byte[bytes];
+            byte[] result = new byte[bytes];
+
+            Marshal.Copy(srcData.Scan0, buffer, 0, bytes);
+            srcImage.UnlockBits(srcData); 
+
+            int stride = srcData.Stride;
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    int rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+                    // Kernel Döngüsü
+                    for (int ky = -radius; ky <= radius; ky++)
+                    {
+                        int pY = y + ky;
+                        // Y Sınır kontrolü
+                        if (pY < 0 || pY >= h) continue;
+
+                        int offsetY = pY * stride;
+
+                        for (int kx = -radius; kx <= radius; kx++)
+                        {
+                            int pX = x + kx;
+                            // X Sınır kontrolü
+                            if (pX < 0 || pX >= w) continue;
+
+                            // Pikselin dizideki yerini bul (Her piksel 3 byte: B, G, R)
+                            int idx = offsetY + (pX * 3);
+
+                            bSum += buffer[idx];
+                            gSum += buffer[idx + 1];
+                            rSum += buffer[idx + 2];
+                            count++;
+                        }
+                    }
+
+                    // Sonucu yaz
+                    int currentIdx = (y * stride) + (x * 3);
+                    result[currentIdx] = (byte)(bSum / count);
+                    result[currentIdx + 1] = (byte)(gSum / count);
+                    result[currentIdx + 2] = (byte)(rSum / count);
+                }
+            }
+
+            // Sonucu bitmab'e geri yükle
+            Marshal.Copy(result, 0, dstData.Scan0, bytes);
+            dstImage.UnlockBits(dstData);
+
+            return dstImage;
+        }
+
+        // 2. MEDIAN (ORTANCA) FİLTRESİ
+        private Bitmap ApplyMedianFilterFast(Bitmap srcImage, int kernelSize)
+        {
+            int w = srcImage.Width;
+            int h = srcImage.Height;
+            int radius = kernelSize / 2;
+
+            Bitmap dstImage = new Bitmap(w, h, PixelFormat.Format24bppRgb);
+            BitmapData srcData = srcImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            BitmapData dstData = dstImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+            int bytes = srcData.Stride * h;
+            byte[] buffer = new byte[bytes];
+            byte[] result = new byte[bytes];
+            Marshal.Copy(srcData.Scan0, buffer, 0, bytes);
+            srcImage.UnlockBits(srcData);
+
+            int stride = srcData.Stride;
+
+            int maxPixels = kernelSize * kernelSize;
+            byte[] rArray = new byte[maxPixels];
+            byte[] gArray = new byte[maxPixels];
+            byte[] bArray = new byte[maxPixels];
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    int count = 0;
+
+                    for (int ky = -radius; ky <= radius; ky++)
+                    {
+                        int pY = y + ky;
+                        if (pY < 0 || pY >= h) continue;
+
+                        int offsetY = pY * stride;
+
+                        for (int kx = -radius; kx <= radius; kx++)
+                        {
+                            int pX = x + kx;
+                            if (pX < 0 || pX >= w) continue;
+
+                            int idx = offsetY + (pX * 3);
+
+                            bArray[count] = buffer[idx];
+                            gArray[count] = buffer[idx + 1];
+                            rArray[count] = buffer[idx + 2];
+                            count++;
+                        }
+                    }
+
+                    // Sıralama
+                    Array.Sort(bArray, 0, count);
+                    Array.Sort(gArray, 0, count);
+                    Array.Sort(rArray, 0, count);
+
+                    int mid = count / 2;
+                    int currentIdx = (y * stride) + (x * 3);
+
+                    result[currentIdx] = bArray[mid];
+                    result[currentIdx + 1] = gArray[mid];
+                    result[currentIdx + 2] = rArray[mid];
+                }
+            }
+
+            Marshal.Copy(result, 0, dstData.Scan0, bytes);
+            dstImage.UnlockBits(dstData);
+
+            return dstImage;
+        }
+
+        // 3. GAUSSIAN (BULANIKLAŞTIRMA) FİLTRESİ
+        private Bitmap ApplyGaussianFilterFast(Bitmap srcImage, int kernelSize)
+        {
+            // Kernel matrisini hesapla
+            double[,] kernel = CalculateGaussianKernel(kernelSize, kernelSize / 3.0);
+            return ApplyConvolutionFast(srcImage, kernel);
+        }
+
+        private Bitmap ApplyConvolutionFast(Bitmap srcImage, double[,] kernel)
+        {
+            int w = srcImage.Width;
+            int h = srcImage.Height;
+            int kernelSize = kernel.GetLength(0);
+            int radius = kernelSize / 2;
+
+            Bitmap dstImage = new Bitmap(w, h, PixelFormat.Format24bppRgb);
+            BitmapData srcData = srcImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            BitmapData dstData = dstImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+            int bytes = srcData.Stride * h;
+            byte[] buffer = new byte[bytes];
+            byte[] result = new byte[bytes];
+            Marshal.Copy(srcData.Scan0, buffer, 0, bytes);
+            srcImage.UnlockBits(srcData);
+
+            int stride = srcData.Stride;
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    double rSum = 0, gSum = 0, bSum = 0;
+
+                    for (int ky = -radius; ky <= radius; ky++)
+                    {
+                        int pY = y + ky;
+                        // Sınır dışındaysa, en yakın sınır pikselini kullan (Clamp yöntemi)
+                        // Veya sadece atla (Skip yöntemi). Burada clamp daha iyi sonuç verir ama basitlik için sınır kontrolü yapıyoruz.
+                        if (pY < 0) pY = 0;
+                        if (pY >= h) pY = h - 1;
+
+                        int offsetY = pY * stride;
+
+                        for (int kx = -radius; kx <= radius; kx++)
+                        {
+                            int pX = x + kx;
+                            if (pX < 0) pX = 0;
+                            if (pX >= w) pX = w - 1;
+
+                            int idx = offsetY + (pX * 3);
+                            double weight = kernel[ky + radius, kx + radius];
+
+                            bSum += buffer[idx] * weight;
+                            gSum += buffer[idx + 1] * weight;
+                            rSum += buffer[idx + 2] * weight;
+                        }
+                    }
+
+                    int currentIdx = (y * stride) + (x * 3);
+
+                    // Renkleri 0-255 arasına sıkıştır
+                    result[currentIdx] = (byte)Math.Max(0, Math.Min(255, (int)bSum));
+                    result[currentIdx + 1] = (byte)Math.Max(0, Math.Min(255, (int)gSum));
+                    result[currentIdx + 2] = (byte)Math.Max(0, Math.Min(255, (int)rSum));
+                }
+            }
+
+            Marshal.Copy(result, 0, dstData.Scan0, bytes);
+            dstImage.UnlockBits(dstData);
+
+            return dstImage;
+        }
+
+        // Gaussian çekirdek hesaplama 
+        private double[,] CalculateGaussianKernel(int size, double sigma)
+        {
+            double[,] kernel = new double[size, size];
+            double sum = 0;
+            int radius = size / 2;
+            double calculatedEuler = 1.0 / (2.0 * Math.PI * sigma * sigma);
+
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int x = -radius; x <= radius; x++)
+                {
+                    double distance = (x * x + y * y);
+                    double value = calculatedEuler * Math.Exp(-distance / (2.0 * sigma * sigma));
+                    kernel[y + radius, x + radius] = value;
+                    sum += value;
+                }
+            }
+
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                    kernel[y, x] /= sum;
+
+            return kernel;
         }
     }
 }

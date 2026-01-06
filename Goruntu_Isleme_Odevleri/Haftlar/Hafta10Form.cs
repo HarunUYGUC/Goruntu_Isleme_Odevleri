@@ -38,7 +38,7 @@ namespace Goruntu_Isleme_Odevleri
 
                 if (i == 1)
                 {
-                    projeButon.Text = "Proje 1: Mantıksal Operatör";
+                    projeButon.Text = "Proje 1: Mantıksal Operatörler";
                 }
                 else if (i == 2) 
                 {

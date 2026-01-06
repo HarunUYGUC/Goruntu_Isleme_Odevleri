@@ -22,7 +22,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 7: Resmi Döndürme (Kaydırmalı)";
+            this.Text = "Proje 7: Resmi Döndürme (Rotation)";
 
             // 1. Panel Oluşturma (Scroll özelliği için)
             pnlContainer = new Panel()

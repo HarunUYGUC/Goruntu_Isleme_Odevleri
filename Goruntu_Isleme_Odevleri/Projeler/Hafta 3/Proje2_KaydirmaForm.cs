@@ -45,7 +45,7 @@ namespace Goruntu_Isleme_Odevleri
         public Proje2_KaydirmaForm(Form parentForm)
         {
             InitializeComponent();
-            haftaFormu = parentForm; // Ana menüyü kaydet
+            haftaFormu = parentForm;
             this.Text = "Proje 2: Serbest Taşıma ve Kaydırma";
             this.Size = new Size(1000, 800);
             this.StartPosition = FormStartPosition.CenterScreen;

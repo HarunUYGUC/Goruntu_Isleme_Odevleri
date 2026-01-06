@@ -25,7 +25,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 10: Kesilmeden Mouse ile Döndürme";
+            this.Text = "Proje 10: Mouse ile Etkileşimli Döndürme";
 
             // 1. PANEL (Kapsayıcı)
             pnlContainer = new Panel()

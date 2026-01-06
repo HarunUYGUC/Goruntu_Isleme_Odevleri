@@ -38,7 +38,7 @@ namespace Goruntu_Isleme_Odevleri
 
                 if (i == 1)
                 {
-                    projeButon.Text = "Proje 1: Boş";
+                    projeButon.Text = "Proje 1 (Henüz Eklenmedi)";
                 }
                 else if (i == 3)
                 {

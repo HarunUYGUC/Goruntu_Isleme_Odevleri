@@ -33,7 +33,7 @@ namespace Goruntu_Isleme_Odevleri
             InitializeComponent();
 
             haftaFormu = parentForm;
-            this.Text = "Proje 2: Bölgesel Görüntü İşleme (ROI)";
+            this.Text = "Proje 6: Bölgesel Netleştirme ve Bulanıklaştırma";
 
             noktalar = new List<Point>();
 

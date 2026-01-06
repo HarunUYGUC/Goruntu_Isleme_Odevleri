@@ -19,7 +19,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 11: Yüksek Kaliteli Döndürme";
+            this.Text = "Proje 11: Kaydırma (Shear) ile Döndürme";
 
             pcbResim = new PictureBox()
             {

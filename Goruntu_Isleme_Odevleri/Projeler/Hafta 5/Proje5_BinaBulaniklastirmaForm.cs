@@ -24,7 +24,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 5: Bina Netleştirme (HIZLANDIRILMIŞ)";
+            this.Text = "Proje 5: Bina Netleştirme (Arka Plan Bulanıklaştırma)";
 
             pcbResim = new PictureBox()
             {

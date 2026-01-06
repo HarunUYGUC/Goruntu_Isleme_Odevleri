@@ -22,7 +22,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 7: Mod Filtresi";
+            this.Text = "Proje 7: En Sık Tekrar Eden Renk (Mode) Filtresi";
 
             int pcbSize = 300;
             int margin = 20;

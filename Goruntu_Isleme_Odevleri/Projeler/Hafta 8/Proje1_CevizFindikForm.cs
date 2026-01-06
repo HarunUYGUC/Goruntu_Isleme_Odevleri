@@ -29,7 +29,7 @@ namespace Goruntu_Isleme_Odevleri
 
             haftaFormu = parentForm;
 
-            this.Text = "Proje 1: Ceviz ve Fındık Sınıflandırma";
+            this.Text = "Proje 1: Ceviz/Fındık Sayma ve Sınıflandırma";
             SetupUI();
 
             this.FormClosed += new FormClosedEventHandler(ProjeForm_FormClosed);

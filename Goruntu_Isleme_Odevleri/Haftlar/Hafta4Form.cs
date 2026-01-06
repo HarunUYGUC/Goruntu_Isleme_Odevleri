@@ -33,7 +33,7 @@ namespace Goruntu_Isleme_Odevleri
 
             // Hafta 4'te sadece 1 proje var
             Button projeButon = new Button();
-            projeButon.Text = "Proje 1: Perspektif Düzeltme";
+            projeButon.Text = "Proje 1: Perspektif Düzeltme ve Alias Giderme";
             projeButon.Tag = 1;
             projeButon.Size = new Size(320, 45);
             projeButon.Font = new Font("Arial", 12);

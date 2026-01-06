@@ -24,7 +24,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 3: Serbest Alan Bulanıklaştırma";
+            this.Text = "Proje 3: Bölgesel Bulanıklaştırma (Buzlu Cam)";
 
             pcbResim = new PictureBox()
             {

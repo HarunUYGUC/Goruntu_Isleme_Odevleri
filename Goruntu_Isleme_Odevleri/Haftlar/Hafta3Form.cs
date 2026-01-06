@@ -42,7 +42,7 @@ namespace Goruntu_Isleme_Odevleri
                 }
                 else if (i == 2)
                 {
-                    projeButon.Text = "Proje 2: Kaydırma ve Döngüsel Taşıma";
+                    projeButon.Text = "Proje 2: Serbest Taşıma ve Kaydırma";
                 }
                 else if (i == 3)
                 {

@@ -19,7 +19,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 2: Arka Plan Değiştirme (Kompakt Görünüm)";
+            this.Text = "Proje 2: Arka Plan Değiştirme (Chroma Key)";
             SetupUI();
 
             this.FormClosed += (s, e) => haftaFormu.Show();

@@ -19,7 +19,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Ödev 1: Mantıksal Operatörler ile Hareket Algılama";
+            this.Text = "Ödev 1: Mantıksal Operatörler";
             this.Size = new Size(1100, 600);
             SetupUI();
         }

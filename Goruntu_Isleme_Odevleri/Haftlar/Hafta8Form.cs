@@ -46,7 +46,7 @@ namespace Goruntu_Isleme_Odevleri
                 }
                 else if (i == 3)
                 {
-                    projeButon.Text = "Proje 3: Morfolojik İşlemler (Erosion & Dilation)";
+                    projeButon.Text = "Proje 3: Morfolojik İşlemler (Erosion - Dilation)";
                 }
                 else if (i == 4)
                 {

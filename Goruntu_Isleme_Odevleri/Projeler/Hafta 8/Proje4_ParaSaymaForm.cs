@@ -31,7 +31,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 4: Sade Para Sayma (Boyut Analizi)";
+            this.Text = "Proje 4: Para Sayma ve Yazı/Tura Tespiti";
             this.Size = new Size(1100, 750);
             this.StartPosition = FormStartPosition.CenterScreen;
             SetupUI();

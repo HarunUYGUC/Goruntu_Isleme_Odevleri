@@ -20,7 +20,7 @@ namespace Goruntu_Isleme_Odevleri
         {
             InitializeComponent();
             haftaFormu = parentForm;
-            this.Text = "Proje 4: Gauss Filtresi";
+            this.Text = "Proje 4: Gauss Filtresinde Standart Sapma (Sigma) Etkisi";
 
             int pcbSize = 350;
             int margin = 25;

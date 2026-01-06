@@ -71,31 +71,31 @@ namespace Goruntu_Isleme_Odevleri
 
             // Konum X (Yatay)
             lblKonumX = new Label() { Text = "Yatay Konum (X): %50", Location = new Point(x3, currentY), AutoSize = true };
-            tbKonumX = new TrackBar() { Location = new Point(x3, currentY + 20), Size = new Size(ctrlW, 45), Minimum = 0, Maximum = 100, Value = 50, TickStyle = TickStyle.None };
+            tbKonumX = new TrackBar() { Location = new Point(x3, currentY + 10), Size = new Size(ctrlW, 45), Minimum = 0, Maximum = 100, Value = 50, TickStyle = TickStyle.None };
             tbKonumX.Scroll += (s, e) => { lblKonumX.Text = $"Yatay Konum (X): %{tbKonumX.Value}"; UpdateWatermark(s, e); };
             currentY += 60;
 
             // Konum Y (Dikey)
             lblKonumY = new Label() { Text = "Dikey Konum (Y): %50", Location = new Point(x3, currentY), AutoSize = true };
-            tbKonumY = new TrackBar() { Location = new Point(x3, currentY + 20), Size = new Size(ctrlW, 45), Minimum = 0, Maximum = 100, Value = 50, TickStyle = TickStyle.None };
+            tbKonumY = new TrackBar() { Location = new Point(x3, currentY + 10), Size = new Size(ctrlW, 45), Minimum = 0, Maximum = 100, Value = 50, TickStyle = TickStyle.None };
             tbKonumY.Scroll += (s, e) => { lblKonumY.Text = $"Dikey Konum (Y): %{tbKonumY.Value}"; UpdateWatermark(s, e); };
             currentY += 60;
 
             // Boyut
             lblBoyut = new Label() { Text = "Boyut: 60", Location = new Point(x3, currentY), AutoSize = true };
-            tbBoyut = new TrackBar() { Location = new Point(x3, currentY + 20), Size = new Size(ctrlW, 45), Minimum = 10, Maximum = 200, Value = 60, TickStyle = TickStyle.None };
+            tbBoyut = new TrackBar() { Location = new Point(x3, currentY + 10), Size = new Size(ctrlW, 45), Minimum = 10, Maximum = 200, Value = 60, TickStyle = TickStyle.None };
             tbBoyut.Scroll += (s, e) => { lblBoyut.Text = $"Boyut: {tbBoyut.Value}"; UpdateWatermark(s, e); };
             currentY += 60;
 
             // Saydamlık
             lblSaydamlik = new Label() { Text = "Saydamlık: 128", Location = new Point(x3, currentY), AutoSize = true };
-            tbSaydamlik = new TrackBar() { Location = new Point(x3, currentY + 20), Size = new Size(ctrlW, 45), Minimum = 0, Maximum = 255, Value = 128, TickStyle = TickStyle.None };
+            tbSaydamlik = new TrackBar() { Location = new Point(x3, currentY + 10), Size = new Size(ctrlW, 45), Minimum = 0, Maximum = 255, Value = 128, TickStyle = TickStyle.None };
             tbSaydamlik.Scroll += (s, e) => { lblSaydamlik.Text = $"Saydamlık: {tbSaydamlik.Value}"; UpdateWatermark(s, e); };
             currentY += 60;
 
             // Açı
             lblAci = new Label() { Text = "Açı: -45°", Location = new Point(x3, currentY), AutoSize = true };
-            tbAci = new TrackBar() { Location = new Point(x3, currentY + 20), Size = new Size(ctrlW, 45), Minimum = -180, Maximum = 180, Value = -45, TickStyle = TickStyle.None };
+            tbAci = new TrackBar() { Location = new Point(x3, currentY + 10), Size = new Size(ctrlW, 45), Minimum = -180, Maximum = 180, Value = -45, TickStyle = TickStyle.None };
             tbAci.Scroll += (s, e) => { lblAci.Text = $"Açı: {tbAci.Value}°"; UpdateWatermark(s, e); };
             currentY += 60;
 
